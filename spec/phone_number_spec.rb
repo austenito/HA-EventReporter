@@ -1,4 +1,4 @@
-require '../phone_number'
+require 'phone_number'
 
 describe PhoneNumber, "#clean_number" do
   it "removes illegal chars" do

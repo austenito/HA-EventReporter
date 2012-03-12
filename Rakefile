@@ -1,6 +1,10 @@
-require 'rake/testtask'
+require "rspec/core/rake_task"
 
-Rake::TestTask.new do |t|
-  t.libs << "test"
-  t.test_files = FileList['test/*test.rb']
+desc "Run those specs"
+task :spec do
+  RSpec::Core::RakeTask.new(:spec) do |t|
+    t.rspec_opts = %w{--colour --format progress}
+    t.pattern = 'spec/*_spec.rb'
+    t.rspec_path = 'rspec'
+  end
 end
