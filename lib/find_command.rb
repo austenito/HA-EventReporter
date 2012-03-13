@@ -2,7 +2,7 @@ class FindCommand
   VALID_ATTR = "regdate|first_name|last_name|email_address|homephone|" +
                 "street|city|state|zipcode"
 
-  def find(query, attendees)
+  def find(attendees, query)
     query_array = query.split
     attribute = query_array.shift
     criteria = query_array.join(" ")

@@ -6,11 +6,13 @@ require 'queue_command'
 
 class EventReporter 
   DEFAULT_FILE = "../data/event_attendees.csv"
-  attr_reader :find_command, :queue_command
+  attr_reader :find_command, :queue_command, :queue, :all_attendees
 
   def initialize
-   @find_command = FindCommand.new
-   @queue_command = QueueCommand.new
+    @find_command = FindCommand.new
+    @queue = Queue.new
+    @queue_command = QueueCommand.new(@queue)
+    @all_attendees = []
   end
 
   def run
@@ -24,7 +26,7 @@ class EventReporter
     attendees = []
     file.each do |line|
       record = line.to_hash
-      attendees << Attendee.new(record)
+      all_attendees << Attendee.new(record)
     end
 
     while user_command != "q"
@@ -45,18 +47,20 @@ class EventReporter
         params = user_input.split
         params.shift
         params = params.join(" ")
+
         case user_command.to_s
         when "find"
-          command = find_command
-          #load it up.
+          if find_command.is_valid?(params)
+            attendees = find_command.find(all_attendees, params)
+            puts attendees.length
+            queue.add(attendees)
+          else 
+            puts "hakdjfldflajdfj"
+          end
         else 
-          command = queue_command
-        end
-
-        if command.is_valid?(params)
-          puts command.run(params)
-        else
-          puts "Print help"
+          if queue_command.is_valid?(params)
+            queue_command.run(params)
+          end
         end
       end
     end

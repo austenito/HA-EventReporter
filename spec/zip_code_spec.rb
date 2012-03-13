@@ -16,4 +16,8 @@ describe ZipCode, "#clean_zipcode" do
     ZipCode.new("967a9").zipcode.should eq("00000")
     ZipCode.new("a967899").zipcode.should eq("00000")
   end
+
+  it "returns int zipcode" do
+    ZipCode.new("67899").to_i.should == 67899
+  end
 end

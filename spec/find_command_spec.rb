@@ -18,7 +18,7 @@ describe FindCommand, "#find <attribute> <criteria>" do
    @attendee.should_receive(:first_name)
    @attendee2.should_receive(:first_name)
    @attendee3.should_receive(:first_name)
-   result = @command.find("first_name Jeff", @attendees)
+   result = @command.find(@attendees, "first_name Jeff")
   
    result.length.should == 2
    result.include?(@attendee).should == true
@@ -26,7 +26,7 @@ describe FindCommand, "#find <attribute> <criteria>" do
   end
 
   it "finds no attendees" do
-   result = @command.find("first_name Austen", @attendees)
+   result = @command.find(@attendees, "first_name Austen")
    result.length.should == 0
   end
   
@@ -37,7 +37,7 @@ describe FindCommand, "#find <attribute> <criteria>" do
     other_attendees = [other_attendee]
 
     other_attendee.should_receive(:street)
-    result = @command.find("street #{address}", other_attendees)
+    result = @command.find(other_attendees, "street #{address}")
 
     result.length.should == 1
     result.include?(other_attendee).should == true

@@ -9,8 +9,8 @@ class Printer
                 "CITY", "STATE", "ADDRESS")
     attendees.each do |attendee|
       puts sprintf(header_format, attendee.last_name, attendee.first_name, 
-                   attendee.email_address, attendee.zipcode, attendee.city,
-                   attendee.state, attendee.street)
+                   attendee.email_address, attendee.zipcode.zipcode, 
+                   attendee.city, attendee.state, attendee.street)
     end
   end
 

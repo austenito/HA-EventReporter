@@ -15,4 +15,8 @@ class ZipCode
     end
     self.zipcode = zipcode
   end
+
+  def to_i
+    zipcode.to_i
+  end
 end

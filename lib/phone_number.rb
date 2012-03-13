@@ -11,4 +11,8 @@ class PhoneNumber
     end
     self.phone_number = phone_number
   end
+
+  def to_i
+    phone_number.to_i
+  end
 end
