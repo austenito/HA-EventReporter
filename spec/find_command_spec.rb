@@ -29,23 +29,37 @@ describe FindCommand, "#find <attribute> <criteria>" do
    result = @command.find("first_name Austen", @attendees)
    result.length.should == 0
   end
+  
+  it "finds address with spaces" do
+    address = "1234 Roar St."
+    other_attendee = mock(Attendee)
+    other_attendee.stub(:street).and_return(address)
+    other_attendees = [other_attendee]
+
+    other_attendee.should_receive(:street)
+    result = @command.find("street #{address}", other_attendees)
+
+    result.length.should == 1
+    result.include?(other_attendee).should == true
+  end
 
   it "accepts supported attributes" do
-    @command.is_valid_query?("find regdate hi").should == true
-    @command.is_valid_query?("find first_name hi").should == true
-    @command.is_valid_query?("find last_name hi").should == true
-    @command.is_valid_query?("find homephone 123123").should == true
-    @command.is_valid_query?("find email_address 123123").should == true
-    @command.is_valid_query?("find homephone test@test.com").should == true
-    @command.is_valid_query?("find street 1220 Ohio").should == true
-    @command.is_valid_query?("find state HI").should == true
-    @command.is_valid_query?("find city Honolulu").should == true
-    @command.is_valid_query?("find zipcode 96819").should == true
+    @command.is_valid_query?("regdate hi").should == true
+    @command.is_valid_query?("first_name hi").should == true
+    @command.is_valid_query?("last_name hi").should == true
+    @command.is_valid_query?("homephone 123123").should == true
+    @command.is_valid_query?("email_address 123123").should == true
+    @command.is_valid_query?("homephone test@test.com").should == true
+    @command.is_valid_query?("street 1220 Ohio").should == true
+    @command.is_valid_query?("street 1220 Ohio St.").should == true
+    @command.is_valid_query?("state HI").should == true
+    @command.is_valid_query?("city Honolulu").should == true
+    @command.is_valid_query?("zipcode 96819").should == true
   end
 
   it "does not accept unsupported attributes" do
-    @command.is_valid_query?("find regdates hi").should == false
+    @command.is_valid_query?("regdates hi").should == false
     @command.is_valid_query?("find").should == false
-    @command.is_valid_query?("find regdate").should == false
+    @command.is_valid_query?("regdate").should == false
   end
 end

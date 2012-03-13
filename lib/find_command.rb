@@ -3,13 +3,13 @@ class FindCommand
                 "street|city|state|zipcode"
 
   def find(query, attendees)
-    elements = query.split
-    key = elements[0]
-    value = elements[1] 
+    query_array = query.split
+    attribute = query_array.shift
+    criteria = query_array.join(" ")
 
     filtered_attendees = []
     attendees.each do |attendee|  
-      if attendee.send(key) == value
+      if attendee.send(attribute) == criteria 
         filtered_attendees << attendee
       end
     end
@@ -17,6 +17,6 @@ class FindCommand
   end
 
   def is_valid_query?(query)
-    (query =~ /find (#{VALID_ATTR}) \w+/) == 0
+    (query =~ /(#{VALID_ATTR}) \w+/) == 0
   end
 end
