@@ -4,9 +4,13 @@ require 'attendee'
 
 class Printer
   def print(attendees)
-    puts "LAST NAME  FIRST NAME  EMAIL  ZIPCODE  CITY  STATE  ADDRESS"
+    header_format = "%-20s\t%-20s\t%-40s\t%-8s\t%-30s\t%-2s\t%-40s"
+    puts sprintf(header_format, "LAST NAME", "FIRST NAME", "EMAIL", "ZIPCODE",
+                "CITY", "STATE", "ADDRESS")
     attendees.each do |attendee|
-      puts attendee.last_name
+      puts sprintf(header_format, attendee.last_name, attendee.first_name, 
+                   attendee.email_address, attendee.zipcode, attendee.city,
+                   attendee.state, attendee.street)
     end
   end
 
@@ -22,7 +26,6 @@ attendees = []
 5.times do
   line = @file.readline
   record = line.to_hash
-  record.delete(:_)
   attendees << Attendee.new(record)
 end
 p.print(attendees)
