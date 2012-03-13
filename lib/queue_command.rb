@@ -22,7 +22,7 @@ class QueueCommand
       end
       printer.print(queue.attendees)
     when "save"
-      printer.save_to(commands.last)
+      printer.save_to(queue.attendees, commands.last)
     else
       queue.send(action)
     end

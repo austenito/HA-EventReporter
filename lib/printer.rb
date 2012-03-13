@@ -14,29 +14,15 @@ class Printer
     end
   end
 
-  def save_to(filename)
-    puts "Please implement teh save"  
-  #def output_data(filename)
-    #output = CSV.open(filename, "w")
-    #@file.each do |line|
-      #if @file.lineno == 2
-        #output << line.headers
-      #end
-      #line[:homephone] = clean_phone_numbers(line[:homephone])
-      #line[:zipcode] = clean_zipcodes(line[:zipcode])
-      #output << line
-    #end
-  #end
+  def save_to(attendees, filename)
+    output = CSV.open(filename, "w")
+    is_top = true
+    attendees.each do |attendee|
+      attendee_hash = attendee.marshal_dump 
+      output << attendee_hash.keys if is_top 
+      is_top = false 
+      output << attendee_hash.values
+    end
+    output.close
   end
 end
-
-p = Printer.new
-
-#@file = CSV.open("../event_attendees.csv", {:headers => true, :header_converters => :symbol})
-#attendees = []
-#5.times do
-  #line = @file.readline
-  #record = line.to_hash
-  #attendees << Attendee.new(record)
-#end
-#p.print(attendees)

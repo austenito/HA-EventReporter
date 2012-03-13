@@ -26,7 +26,7 @@ describe QueueCommand, "(print|print by|save to)" do
   end
 
   it "should save to file"  do
-    @printer.should_receive(:save_to).with("testfile")
+    @printer.should_receive(:save_to).with(@attendees, "testfile")
     @command.run("save to testfile")
   end
 
