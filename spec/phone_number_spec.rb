@@ -21,4 +21,8 @@ describe PhoneNumber, "#clean_number" do
   it "returns int phone number" do
     PhoneNumber.new("8197777777").to_i.should == 8197777777
   end
+
+  it "returns string phone number" do
+    PhoneNumber.new("8197777777").to_s.should == "8197777777"
+  end
 end

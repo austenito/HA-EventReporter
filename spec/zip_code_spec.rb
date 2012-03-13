@@ -20,4 +20,8 @@ describe ZipCode, "#clean_zipcode" do
   it "returns int zipcode" do
     ZipCode.new("67899").to_i.should == 67899
   end
+
+  it "returns string zipcode" do
+    ZipCode.new("67899").to_s.should == "67899"
+  end
 end

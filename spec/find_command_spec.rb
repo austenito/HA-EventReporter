@@ -25,6 +25,28 @@ describe FindCommand, "#find <attribute> <criteria>" do
    result.include?(@attendee3).should == true
   end
 
+  it "finds zipcode" do
+    zipcode = ZipCode.new("96789")
+    other_attendee = mock(Attendee)
+    other_attendee.stub(:zipcode).and_return(zipcode)
+    other_attendees = [other_attendee]
+    result = @command.find(other_attendees, "zipcode 96789")
+
+    result.length.should == 1
+    result.include?(other_attendee).should == true
+  end
+
+  it "finds homephone" do
+    home_phone = PhoneNumber.new("8082301111")
+    other_attendee = mock(Attendee)
+    other_attendee.stub(:homephone).and_return(home_phone)
+    other_attendees = [other_attendee]
+    result = @command.find(other_attendees, "homephone 8082301111")
+
+    result.length.should == 1
+    result.include?(other_attendee).should == true
+  end
+
   it "finds no attendees" do
    result = @command.find(@attendees, "first_name Austen")
    result.length.should == 0

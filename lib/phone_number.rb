@@ -15,4 +15,8 @@ class PhoneNumber
   def to_i
     phone_number.to_i
   end
+
+  def to_s
+    phone_number.to_s
+  end
 end

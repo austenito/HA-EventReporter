@@ -35,7 +35,7 @@ describe Queue do
     @attendees.should_receive(:sort_by).and_yield(attendee)
     attendee.should_receive("regdate").and_return(value)
 
-    DateTime.should_receive(:strptime).with(value, "%Y/%m/%d %H:%M")
+    DateTime.should_receive(:strptime).with(value, "%m/%d/%Y %H:%M")
     @queue.sort_by("regdate")
   end
 

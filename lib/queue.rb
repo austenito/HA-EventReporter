@@ -31,7 +31,8 @@ class Queue
       when "homephone"
         value.to_i
       when "regdate"
-       DateTime.strptime(value, "%Y/%m/%d %H:%M")
+        puts value
+       DateTime.strptime(value, "%m/%d/%Y %H:%M")
       else
         value
       end

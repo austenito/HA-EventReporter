@@ -9,7 +9,9 @@ class FindCommand
 
     filtered_attendees = []
     attendees.each do |attendee|  
-      if attendee.send(attribute) == criteria 
+      #puts attendee.send(attribute).to_s + " = " + criteria 
+
+      if attendee.send(attribute).to_s == criteria 
         filtered_attendees << attendee
       end
     end

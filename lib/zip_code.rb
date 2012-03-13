@@ -19,4 +19,8 @@ class ZipCode
   def to_i
     zipcode.to_i
   end
+
+  def to_s
+    zipcode.to_s
+  end
 end
