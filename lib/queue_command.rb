@@ -13,16 +13,21 @@ class QueueCommand
   def run(query)
     commands = query.split
     action = commands[0]
-    if queue.responds_to?(action)
-      return queue.send(action)
+
+    case action
+    when "print"
+      if commands.length == 3
+        queue.sort_by(commands.last)
+      end
+      printer.print(queue.attendees)
+    when "save"
+      printer.save_to(commands.last)
     else
-      action_modifier = commands[1]
-      attribute = commands[2]
-      printer.send("#{action}_#{action_modifier}", attribute)
+      queue.send(action)
     end
   end
 
   def is_valid_query?(query)
-    (query =~ /print( by (#{VALID_ATTR}))?$/) == 0
+    (query =~ /print( by (#{VALID_ATTR}))?$|save to \w+(.\w+)?$/) == 0
   end
 end

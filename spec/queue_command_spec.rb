@@ -8,6 +8,8 @@ describe QueueCommand, "(print|print by|save to)" do
     @queue = mock(Queue)
     @printer = mock(Printer)
     @command = QueueCommand.new(@queue, @printer)
+    @attendees = mock(Array)
+    @queue.stub(:attendees).and_return(@attendees)
   end
 
   it "should respond to queue methods" do
@@ -18,12 +20,12 @@ describe QueueCommand, "(print|print by|save to)" do
   
   it "should print by attribute" do
     @queue.stub(:responds_to?).with("print").and_return(false)
-    @printer.should_receive(:print_by).with("last_name")
+    @queue.should_receive(:sort_by).with("last_name")
+    @printer.should_receive(:print).with(@attendees)
     @command.run("print by last_name")
   end
 
   it "should save to file"  do
-    @queue.stub(:responds_to?).with("save").and_return(false)
     @printer.should_receive(:save_to).with("testfile")
     @command.run("save to testfile")
   end
@@ -44,5 +46,15 @@ describe QueueCommand, "(print|print by|save to)" do
   it "does not accept unsupported print attributes" do
     @command.is_valid_query?("prints hi").should == false
     @command.is_valid_query?("print hi").should == false
+  end
+
+  it "accepts supported save attributes" do
+    @command.is_valid_query?("save to file").should == true
+    @command.is_valid_query?("save to file.txt").should == true
+  end
+
+  it "does not accept save attributes" do
+    @command.is_valid_query?("save file").should == false  
+    @command.is_valid_query?("save to file.txt hi").should == false 
   end
 end
