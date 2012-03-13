@@ -1,5 +1,9 @@
-class EventReporter 
+$:.unshift File.dirname(__FILE__)
+require 'csv'
+require 'attendee'
 
+class EventReporter 
+  DEFAULT_FILE = "../data/event_attendees.csv"
   #def output_data(filename)
     #output = CSV.open(filename, "w")
     #@file.each do |line|
@@ -13,17 +17,20 @@ class EventReporter
   #end
 
   def run
-    #@filename = filename
-    @filename = "eventattendees.csv"
-    if @filename != ""
-      @file = CSV.open(@filename, {:headers => true, :header_converters => :symbol})
-      number = clean_phone_numbers(line[:homephone])
-      zipcode = clean_zipcodes(line[:zipcode])
+    printf "Enter file to load (Empty file loads event_attendees.csv): "
+    command = gets
+    command = command.strip
+
+    filename = DEFAULT_FILE if command.length == 0
+    file = CSV.open(filename, {:headers => true, :header_converters => :symbol})
+
+    attendees = []
+    5.times do
+      line = file.readline
+      record = line.to_hash
+      attendees << Attendee.new(record)
     end
-
-    #printf "Enter file to load (Empty file loads eventattendees.csv): "
-    #command = gets
-
+puts attendees
     while command != "q"
       printf "Enter command: "
       command = gets

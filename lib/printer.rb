@@ -21,11 +21,11 @@ end
 
 p = Printer.new
 
-@file = CSV.open("../event_attendees.csv", {:headers => true, :header_converters => :symbol})
-attendees = []
-5.times do
-  line = @file.readline
-  record = line.to_hash
-  attendees << Attendee.new(record)
-end
-p.print(attendees)
+#@file = CSV.open("../event_attendees.csv", {:headers => true, :header_converters => :symbol})
+#attendees = []
+#5.times do
+  #line = @file.readline
+  #record = line.to_hash
+  #attendees << Attendee.new(record)
+#end
+#p.print(attendees)

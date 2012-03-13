@@ -16,7 +16,6 @@ class QueueCommand
     else
       action_modifier = commands[1]
       attribute = commands[2]
-      puts "#{action}_#{action_modifier}" + " #{attribute}"
       printer.send("#{action}_#{action_modifier}", attribute)
     end
   end

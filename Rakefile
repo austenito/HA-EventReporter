@@ -8,3 +8,5 @@ task :spec do
     t.rspec_path = 'rspec'
   end
 end
+
+task :default => [:spec]
