@@ -18,10 +18,10 @@ class EventReporter
 
   def run
     printf "Enter file to load (Empty file loads event_attendees.csv): "
-    command = gets
-    command = command.strip
+    user_command = gets
+    user_command = user_command.strip
 
-    filename = DEFAULT_FILE if command.length == 0
+    filename = DEFAULT_FILE if user_command.length == 0
     file = CSV.open(filename, {:headers => true, :header_converters => :symbol})
 
     attendees = []
@@ -30,11 +30,13 @@ class EventReporter
       record = line.to_hash
       attendees << Attendee.new(record)
     end
-puts attendees
-    while command != "q"
+
+    while user_command != "q"
       printf "Enter command: "
-      command = gets
-      printf command
+      user_command = gets
+      puts "full command: #{user_command}"
+      commands = user_command.split
+      command = commands[0]
     end
   end
 end
