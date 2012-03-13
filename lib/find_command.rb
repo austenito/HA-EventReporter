@@ -16,7 +16,7 @@ class FindCommand
     filtered_attendees
   end
 
-  def is_valid_query?(query)
+  def is_valid?(query)
     (query =~ /(#{VALID_ATTR}) \w+/) == 0
   end
 end

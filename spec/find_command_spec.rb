@@ -44,22 +44,22 @@ describe FindCommand, "#find <attribute> <criteria>" do
   end
 
   it "accepts supported attributes" do
-    @command.is_valid_query?("regdate hi").should == true
-    @command.is_valid_query?("first_name hi").should == true
-    @command.is_valid_query?("last_name hi").should == true
-    @command.is_valid_query?("homephone 123123").should == true
-    @command.is_valid_query?("email_address 123123").should == true
-    @command.is_valid_query?("homephone test@test.com").should == true
-    @command.is_valid_query?("street 1220 Ohio").should == true
-    @command.is_valid_query?("street 1220 Ohio St.").should == true
-    @command.is_valid_query?("state HI").should == true
-    @command.is_valid_query?("city Honolulu").should == true
-    @command.is_valid_query?("zipcode 96819").should == true
+    @command.is_valid?("regdate hi").should == true
+    @command.is_valid?("first_name hi").should == true
+    @command.is_valid?("last_name hi").should == true
+    @command.is_valid?("homephone 123123").should == true
+    @command.is_valid?("email_address 123123").should == true
+    @command.is_valid?("homephone test@test.com").should == true
+    @command.is_valid?("street 1220 Ohio").should == true
+    @command.is_valid?("street 1220 Ohio St.").should == true
+    @command.is_valid?("state HI").should == true
+    @command.is_valid?("city Honolulu").should == true
+    @command.is_valid?("zipcode 96819").should == true
   end
 
   it "does not accept unsupported attributes" do
-    @command.is_valid_query?("regdates hi").should == false
-    @command.is_valid_query?("find").should == false
-    @command.is_valid_query?("regdate").should == false
+    @command.is_valid?("regdates hi").should == false
+    @command.is_valid?("find").should == false
+    @command.is_valid?("regdate").should == false
   end
 end

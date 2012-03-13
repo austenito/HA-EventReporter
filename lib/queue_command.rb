@@ -1,7 +1,8 @@
+require "queue"
 require "printer"
 
 class QueueCommand
-  VALID_ATTR = "regdate|first_name|last_name|email_address|homephone|" +
+  ATTR = "regdate|first_name|last_name|email_address|homephone|" +
                 "street|city|state|zipcode"
   attr_reader :queue, :printer
 
@@ -27,7 +28,7 @@ class QueueCommand
     end
   end
 
-  def is_valid_query?(query)
-    (query =~ /print( by (#{VALID_ATTR}))?$|save to \w+(.\w+)?$/) == 0
+  def is_valid?(query)
+    (query =~ /count$|clear$|print( by (#{ATTR}))?$|save to \w+(.\w+)?$/) == 0
   end
 end

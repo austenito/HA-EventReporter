@@ -15,7 +15,18 @@ class Printer
   end
 
   def save_to(filename)
-    
+    puts "Please implement teh save"  
+  #def output_data(filename)
+    #output = CSV.open(filename, "w")
+    #@file.each do |line|
+      #if @file.lineno == 2
+        #output << line.headers
+      #end
+      #line[:homephone] = clean_phone_numbers(line[:homephone])
+      #line[:zipcode] = clean_zipcodes(line[:zipcode])
+      #output << line
+    #end
+  #end
   end
 end
 
