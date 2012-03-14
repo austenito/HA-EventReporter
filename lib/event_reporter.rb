@@ -1,5 +1,4 @@
 $:.unshift File.dirname(__FILE__)
-require 'csv'
 require 'attendee'
 require 'queue'
 require 'commands'
@@ -18,9 +17,7 @@ class EventReporter
     begin
       printf "Enter file to load (Empty file loads event_attendees.csv): "
       user_command = gets.strip
-      is_loaded = commands.load(user_command)
-      if is_loaded then break end
-      print_invalid_file(user_command) unless is_loaded || user_command == "quit"
+      if commands.load(user_command) then break end
     end while user_command != "quit"
 
     while user_command != "quit" 
@@ -35,9 +32,9 @@ class EventReporter
     args = parse_args(user_input)
 
     if Validator.is_valid?(command, args)
-      commands.send(command, args)
+      commands.send(command, args) 
     else 
-      commands.print_all_help
+      commands.print_help
     end
   end
 
@@ -50,11 +47,7 @@ class EventReporter
     params.shift
     params.join(" ")
   end
-
-  def print_invalid_file(filename)
-    puts "File (#{filename} doesn't exist.)"
-  end
 end
 
-  r = EventReporter.new
-  r.run
+r = EventReporter.new
+r.run

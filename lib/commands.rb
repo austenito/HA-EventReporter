@@ -1,6 +1,7 @@
 require 'printer'
 require 'queue'
 require 'attendee'
+require 'csv'
 
 class Commands 
   DEFAULT_FILE = File.dirname(__FILE__) + "/event_attendees.csv"
@@ -62,23 +63,29 @@ class Commands
   def load(filename)
     filename = DEFAULT_FILE if filename.length == 0
     if File.exists?(filename)
-      all_attendees.clear 
-      file = CSV.open(filename, {:headers => true, :header_converters => :symbol})
-
-      attendees = []
-      file.each do |line|
-        record = line.to_hash
-        all_attendees << Attendee.new(record)
-      end
+      store_attendees(filename) 
+      puts "File \"#{filename}\" loaded"
       true
-    else 
+    else
+      puts invalid_file(filename)
       false
     end
   end
 
+  def store_attendees(filename)
+    all_attendees.clear 
+    file = CSV.open(filename, {:headers => true, :header_converters => :symbol})
+
+    attendees = []
+    file.each do |line|
+      record = line.to_hash
+      all_attendees << Attendee.new(record)
+    end
+  end
+  
   def help(args)
     if args.length == 0
-      print_all_help
+      print_help
     else
       args = args.split
       command = args.shift
@@ -93,14 +100,14 @@ class Commands
       end
 
       if help_text.nil?
-        print_all_help 
+        print_help 
       else
         puts help_text
       end
     end
   end
 
-  def print_all_help
+  def print_help
     puts "load - " + help_hash["load"]
     puts "find - " + help_hash["find"]
     puts "queue print - " + help_hash["queue"]["print"]
@@ -109,5 +116,9 @@ class Commands
     puts "queue clear - " + help_hash["queue"]["clear"]
     puts "queue save to - " + help_hash["queue"]["save to"]
     puts "quit - " + help_hash["quit"]
+  end
+
+  def invalid_file(filename)
+    "File (#{filename} doesn't exist.)"
   end
 end
