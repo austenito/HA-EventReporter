@@ -1,7 +1,7 @@
 require 'attendee'
-require 'find_command'
+require 'commands'
 
-describe FindCommand, "#find <attribute> <criteria>" do
+describe Commands, "#find <attribute> <criteria>" do
   before(:each) do
     @attendee = mock(Attendee)
     @attendee.stub(:first_name).and_return("Jeff")
@@ -11,7 +11,7 @@ describe FindCommand, "#find <attribute> <criteria>" do
     @attendee3.stub(:first_name).and_return("Jeff")
     @attendees = [@attendee, @attendee2, @attendee3]
 
-    @command = FindCommand.new
+    @command = Commands.new
   end
 
   it "finds attendees" do
