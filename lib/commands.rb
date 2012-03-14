@@ -4,12 +4,26 @@ require 'attendee'
 
 class Commands 
   DEFAULT_FILE = File.dirname(__FILE__) + "/event_attendees.csv"
-  attr_reader :all_attendees, :attendee_queue, :printer
-
+  attr_reader :attendee_queue, :printer, :help_hash
+  attr_accessor :all_attendees
   def initialize(attendee_queue = Queue.new, printer = Printer.new)
     @attendee_queue = attendee_queue
     @printer = printer
     @all_attendees = []
+    @help_hash = { "find" => "Load the queue with all records matching the " +
+                             "criteria for the given attribute.", 
+                   "queue" => {"print" => "Print out a tab-delimited data" + 
+                                           "table with a header row",
+                               "print by" => "Print the data table sorted " +
+                               "by the specified attribute like zipcode.",
+                               "count" => "Output how many records are in " +
+                                          "the current queue",
+                               "clear" => "Empty the queue",
+                               "save to" => "Export the current queue to " +
+                                            "the specified filename as a CSV"},
+                   "load" => "Erase any loaded data and parse the " +
+                             "specified file. If no filename is given, " + 
+                             "default to event_attendees.csv." }
   end
 
   def find(args)
@@ -58,6 +72,22 @@ class Commands
       true
     else 
       false
+    end
+  end
+
+  def help(args)
+    if args.length == 0
+    else
+      args = args.split
+      command = args.shift
+      help_value = help_hash[command]
+
+      case command
+      when "queue"
+        puts help_value[args.join(" ")]
+      else
+        puts help_hash[command] 
+      end
     end
   end
 end
