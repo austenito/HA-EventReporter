@@ -21,71 +21,56 @@ describe "run" do
   end
 end
 
-describe "find <attribute> <criteria>" do
+describe "find matches" do
   before(:each) do
     @attendee = mock(Attendee)
-    @attendee.stub(:first_name).and_return("Jeff")
-    @queue = mock(Queue)
     @command = Commands.new(@queue)
+    @attendees = mock(Array)
+    @params = mock(Hash) 
   end
 
   it "finds attendees" do
-    attendee2 = mock(Attendee)
-    attendee2.stub(:first_name).and_return("Matt")
-    attendee3 = mock(Attendee)
-    attendee3.stub(:first_name).and_return("Jeff")
+    first_name = mock(String)
+    next_first_name = mock(String)
 
-    @attendee.should_receive(:first_name)
-    attendee2.should_receive(:first_name)
-    attendee3.should_receive(:first_name)
-    @command.all_attendees = [@attendee, attendee2, attendee3]
+    @params.should_receive(:all?).and_yield("first_name", "jeff")
+    @attendee.should_receive(:send).and_return(first_name)
+    first_name.should_receive(:to_s).and_return(next_first_name)
+    next_first_name.should_receive(:downcase).and_return("jeff")
 
-    @queue.should_receive(:clear) 
-    @queue.should_receive(:add) 
-    @command.find("first_name Jeff")
+    @command.find_matches([@attendee], @params)
+  end
+end
+
+describe "find" do
+  before(:each) do
+    @queue = Queue.new
+    @command = Commands.new(@queue)
   end
 
-  it "finds zipcode" do
-    @queue.should_receive(:clear) 
-    @queue.should_receive(:add) 
-    zipcode = ZipCode.new("96789")
-    other_attendee = mock(Attendee)
-    other_attendee.stub(:zipcode).and_return(zipcode)
-    other_attendees = [other_attendee]
-    @command.all_attendees = other_attendees
-    @command.find("zipcode 96789")
-  end
-
-  it "finds homephone" do
-    @queue.should_receive(:clear) 
-    @queue.should_receive(:add) 
-    home_phone = PhoneNumber.new("8082301111")
-    other_attendee = mock(Attendee)
-    other_attendee.stub(:homephone).and_return(home_phone)
-    other_attendees = [other_attendee]
-    @command.all_attendees = other_attendees
-    @command.find("homephone 8082301111")
-  end
-
-  it "finds no attendees" do
+  it "clears queue" do
     @queue.should_receive(:clear) 
     @queue.should_receive(:add) 
     @command.find("first_name Austen")
   end
 
-  it "finds address with spaces" do
-    @queue.should_receive(:clear) 
-    @queue.should_receive(:add) 
+  it "handles compound query" do
+    args = mock(String)
+    clause = mock(String)
+    args.should_receive(:split).with("and").and_return([clause])
 
-    address = "1234 Roar St."
-    other_attendee = mock(Attendee)
-    other_attendee.stub(:street).and_return(address)
-    other_attendees = [other_attendee]
-    other_attendee.should_receive(:street)
-    
-    @command.all_attendees = other_attendees
-    @command.find("street #{address}")
+    Validator.stub(:is_valid?).and_return(true)
+    clause.should_receive(:strip).and_return(clause)
+    clause.should_receive(:split).and_return(["first_name", "austen"])
+
+    values = Array.new
+    @command.stub!(:find_matches).and_return(values)
+    @queue.should_receive(:add).with(values)
+    @command.find(args)
   end
+end
+
+describe "find <attribute> <criteria> and <attribute> <criteria>" do
 end
 
 describe "queue <print>|<print by>|<save to>" do

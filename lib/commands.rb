@@ -13,27 +13,27 @@ class Commands
     @printer = printer
     @all_attendees = []
     @help_hash = { "find" => "Load the queue with all records matching the " +
-                             "criteria for the given attribute.", 
-                   "queue" => {"print" => "Print out a tab-delimited data" + 
-                                           "table with a header row",
-                               "print by" => "Print the data table sorted " +
-                               "by the specified attribute like zipcode.",
-                               "count" => "Output how many records are in " +
-                                          "the current queue",
-                               "clear" => "Empty the queue",
-                               "save to" => "Export the current queue to " +
-                                            "the specified filename as a CSV"},
-                   "load" => "Erase any loaded data and parse the " +
-                             "specified file. If no filename is given, " + 
-                             "default to event_attendees.csv.",
-                   "quit" => "Exit"}
+      "criteria for the given attribute.", 
+      "queue" => {"print" => "Print out a tab-delimited data" + 
+        "table with a header row",
+        "print by" => "Print the data table sorted " +
+        "by the specified attribute like zipcode.",
+        "count" => "Output how many records are in " +
+        "the current queue",
+        "clear" => "Empty the queue",
+        "save to" => "Export the current queue to " +
+        "the specified filename as a CSV"},
+        "load" => "Erase any loaded data and parse the " +
+        "specified file. If no filename is given, " + 
+        "default to event_attendees.csv.",
+        "quit" => "Exit"}
   end
 
   def run(user_input)
     user_input = user_input.downcase
     command, args = parse(user_input)
-    
-    if Validator.is_valid?(command, args)
+
+    if Validator.is_valid?(command, args) ||  command == "find"
       send(command, args) 
     else 
       print_help
@@ -41,20 +41,36 @@ class Commands
   end
 
   def find(args)
-    args_array = args.split
-    attribute = args_array.shift
-    criteria = args_array.join(" ")
-
-    filtered_attendees = []
-    all_attendees.each do |attendee|  
-      if attendee.send(attribute).to_s.downcase == criteria 
-        filtered_attendees << attendee
+    clauses = args.split("and") 
+    params = {}
+    clauses.each do |clause|
+      clause = clause.strip
+      if Validator.is_valid?("find", clause)
+        args_array = clause.split
+        attribute = args_array.shift
+        criteria = args_array.join(" ")
+        params[attribute] = criteria
+      else
+        print_help
+        return
       end
     end
 
+    filtered_attendees = find_matches(@all_attendees, params)
     attendee_queue.clear
     attendee_queue.add(filtered_attendees)
     puts "Found #{filtered_attendees.length} records."
+  end
+
+  def find_matches(attendees, params)
+    filtered_attendees = []
+    attendees.each do |attendee|  
+      match = params.all? do |attribute, criteria| 
+        attendee.send(attribute).to_s.downcase == criteria 
+      end
+      filtered_attendees << attendee if match
+    end
+    filtered_attendees
   end
 
   def queue(args)
@@ -95,7 +111,7 @@ class Commands
       all_attendees << Attendee.new(record)
     end
   end
-  
+
   def help(args)
     if args.length == 0
       print_help
