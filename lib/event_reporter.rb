@@ -6,28 +6,18 @@ require 'commands'
 require 'validator'
 
 class EventReporter 
-  DEFAULT_FILE = "../data/event_attendees.csv"
   attr_reader :commands, :queue, :all_attendees
 
   def initialize
     @commands = Commands.new
     @queue = Queue.new
-    @all_attendees = []
   end
 
   def run
     printf "Enter file to load (Empty file loads event_attendees.csv): "
     user_command = gets
     user_command = user_command.strip
-
-    filename = DEFAULT_FILE if user_command.length == 0
-    file = CSV.open(filename, {:headers => true, :header_converters => :symbol})
-
-    attendees = []
-    file.each do |line|
-      record = line.to_hash
-      all_attendees << Attendee.new(record)
-    end
+    commands.load(user_command)
 
     while user_command != "q"
       printf "Enter command: "
@@ -42,14 +32,7 @@ class EventReporter
     args = parse_args(user_input)
 
     if Validator.is_valid?(command, args)
-      case command
-      when "find"
-        commands.find(all_attendees, args)
-      when "queue"
-        commands.queue(args)
-      when "load"
-        # do loader
-      end
+      commands.send(command, args)
     else 
       #if queue_command.is_valid?(params)
       #queue_command.run(params)

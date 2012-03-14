@@ -40,28 +40,34 @@ describe Validator, "#is_value?" do
     Validator.is_valid?("queue", "print by zipcode").should == true
   end
 
-  it "queue", "does not accept unsupported print attributes" do
+  it "does not accept unsupported print attributes" do
     Validator.is_valid?("queue", "prints hi").should == false
     Validator.is_valid?("queue", "print hi").should == false
   end
 
-  it "queue", "accepts supported save attributes" do
+  it "accepts supported save attributes" do
     Validator.is_valid?("queue", "save to file").should == true
     Validator.is_valid?("queue", "save to file.txt").should == true
   end
 
-  it "queue", "does not accept save attributes" do
+  it "does not accept save attributes" do
     Validator.is_valid?("queue", "save file").should == false  
     Validator.is_valid?("queue", "save to file.txt hi").should == false 
   end
 
-  it "queue", "does handle count" do
+  it "does handle count" do
     Validator.is_valid?("queue", "count").should == true 
     Validator.is_valid?("queue", "counts").should == false
   end
 
-  it "queue", "does handle clear" do
+  it "does handle clear" do
     Validator.is_valid?("queue", "clear").should == true 
     Validator.is_valid?("queue", "clears").should == false 
+  end
+
+  it "loads any filename" do
+    Validator.is_valid?("load", "clears").should == true 
+    Validator.is_valid?("load", "C:\\Windows Sucks").should == true 
+    Validator.is_valid?("load", "/home/austen/omg").should == true 
   end
 end

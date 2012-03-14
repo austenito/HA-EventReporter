@@ -3,19 +3,22 @@ require 'queue'
 require 'attendee'
 
 class Commands 
-  attr_reader :attendee_queue, :printer
+  DEFAULT_FILE = "../data/event_attendees.csv"
+  attr_reader :all_attendees, :attendee_queue, :printer
+
   def initialize(attendee_queue = Queue.new, printer = Printer.new)
     @attendee_queue = attendee_queue
     @printer = printer
+    @all_attendees = []
   end
 
-  def find(attendees, args)
+  def find(args)
     args_array = args.split
     attribute = args_array.shift
     criteria = args_array.join(" ")
 
     filtered_attendees = []
-    attendees.each do |attendee|  
+    all_attendees.each do |attendee|  
       if attendee.send(attribute).to_s == criteria 
         filtered_attendees << attendee
       end
@@ -38,6 +41,18 @@ class Commands
     when "save" then printer.save_to(attendee_queue.attendees, args.last)
     when "count" then attendee_queue.count
     when "clear" then attendee_queue.clear
+    end
+  end
+
+  def load(filename)
+    all_attendees.clear 
+    filename = DEFAULT_FILE if filename.length == 0
+    file = CSV.open(filename, {:headers => true, :header_converters => :symbol})
+
+    attendees = []
+    file.each do |line|
+      record = line.to_hash
+      all_attendees << Attendee.new(record)
     end
   end
 end
