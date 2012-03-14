@@ -14,15 +14,18 @@ class EventReporter
   end
 
   def run
-    printf "Enter file to load (Empty file loads event_attendees.csv): "
-    user_command = gets
-    user_command = user_command.strip
-    commands.load(user_command)
+    is_loaded = false
+    begin
+      printf "Enter file to load (Empty file loads event_attendees.csv): "
+      user_command = gets.strip
+      is_loaded = commands.load(user_command)
+      if is_loaded then break end
+      print_invalid_file(user_command) unless is_loaded || user_command == "quit"
+    end while user_command != "quit"
 
-    while user_command != "q"
+    while user_command != "quit" 
       printf "Enter command: "
-      user_command = gets
-      puts "full command: #{user_command}"
+      user_command = gets.strip
       execute(user_command)
     end
   end
@@ -49,6 +52,10 @@ class EventReporter
     params = input.split
     params.shift
     params.join(" ")
+  end
+
+  def print_invalid_file(filename)
+    puts "File (#{filename} doesn't exist.)"
   end
 end
 

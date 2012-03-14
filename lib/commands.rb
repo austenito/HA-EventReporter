@@ -3,7 +3,7 @@ require 'queue'
 require 'attendee'
 
 class Commands 
-  DEFAULT_FILE = "../data/event_attendees.csv"
+  DEFAULT_FILE = File.dirname(__FILE__) + "/event_attendees.csv"
   attr_reader :all_attendees, :attendee_queue, :printer
 
   def initialize(attendee_queue = Queue.new, printer = Printer.new)
@@ -45,14 +45,19 @@ class Commands
   end
 
   def load(filename)
-    all_attendees.clear 
     filename = DEFAULT_FILE if filename.length == 0
-    file = CSV.open(filename, {:headers => true, :header_converters => :symbol})
+    if File.exists?(filename)
+      all_attendees.clear 
+      file = CSV.open(filename, {:headers => true, :header_converters => :symbol})
 
-    attendees = []
-    file.each do |line|
-      record = line.to_hash
-      all_attendees << Attendee.new(record)
+      attendees = []
+      file.each do |line|
+        record = line.to_hash
+        all_attendees << Attendee.new(record)
+      end
+      true
+    else 
+      false
     end
   end
 end
