@@ -23,7 +23,8 @@ class Commands
                                             "the specified filename as a CSV"},
                    "load" => "Erase any loaded data and parse the " +
                              "specified file. If no filename is given, " + 
-                             "default to event_attendees.csv." }
+                             "default to event_attendees.csv.",
+                   "quit" => "Exit"}
   end
 
   def find(args)
@@ -77,17 +78,36 @@ class Commands
 
   def help(args)
     if args.length == 0
+      print_all_help
     else
       args = args.split
       command = args.shift
       help_value = help_hash[command]
 
+      help_text = nil
       case command
       when "queue"
-        puts help_value[args.join(" ")]
+        help_text = help_value[args.join(" ")]
       else
-        puts help_hash[command] 
+        help_text = help_hash[command] 
+      end
+
+      if help_text.nil?
+        print_all_help 
+      else
+        puts help_text
       end
     end
+  end
+
+  def print_all_help
+    puts "load - " + help_hash["load"]
+    puts "find - " + help_hash["find"]
+    puts "queue print - " + help_hash["queue"]["print"]
+    puts "queue print by - " + help_hash["queue"]["print by"]
+    puts "queue count - " + help_hash["queue"]["count"]
+    puts "queue clear - " + help_hash["queue"]["clear"]
+    puts "queue save to - " + help_hash["queue"]["save to"]
+    puts "quit - " + help_hash["quit"]
   end
 end

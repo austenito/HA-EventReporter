@@ -37,10 +37,7 @@ class EventReporter
     if Validator.is_valid?(command, args)
       commands.send(command, args)
     else 
-      #if queue_command.is_valid?(params)
-      #queue_command.run(params)
-      #end
-      puts "Print help"
+      commands.print_all_help
     end
   end
 
