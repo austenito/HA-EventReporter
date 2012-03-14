@@ -38,34 +38,45 @@ class EventReporter
   end
 
   def execute(user_input)
-    if user_input.length > 0
-      user_command = user_input.split.first
-      user_command = user_command.match(/print$|find$|queue$/)
-      if user_command.nil?
-        puts "Print help"
-      else
-        params = user_input.split
-        params.shift
-        params = params.join(" ")
+    command = parse_command(user_input)
+    args = parse_args(user_input)
 
-        case user_command.to_s
-        when "find"
-          if find_command.is_valid?(params)
-            attendees = find_command.find(all_attendees, params)
-            puts attendees.length
-            queue.add(attendees)
-          else 
-            puts "hakdjfldflajdfj"
-          end
+    if Validator.is_valid(command, args)
+      case command
+      when "find"
+        if find_command.is_valid?(params)
+          attendees = find_command.find(all_attendees, params)
+          puts attendees.length
+          queue.add(attendees)
         else 
-          if queue_command.is_valid?(params)
-            queue_command.run(params)
-          end
+          puts "hakdjfldflajdfj"
         end
+      when "queue"
+        #if "print" 
+        #else "save"
+        #count
+        #clear
+      when "load"
+        # do loader
       end
+    else 
+      #if queue_command.is_valid?(params)
+      #queue_command.run(params)
+      #end
+      puts "Print help"
     end
   end
-end
 
-r = EventReporter.new
-r.run
+  def parse_command(input)
+    input = user_input.split.first
+    user_command.match(/find$|queue$/)
+  end
+
+  def parse_args(input)
+    params = user_input.split
+    params.shift
+    params.join(" ")
+  end
+
+  r = EventReporter.new
+  r.run

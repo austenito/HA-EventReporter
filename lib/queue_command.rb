@@ -27,8 +27,4 @@ class QueueCommand
       queue.send(action)
     end
   end
-
-  def is_valid?(query)
-    (query =~ /count$|clear$|print( by (#{ATTR}))?$|save to \w+(.\w+)?$/) == 0
-  end
 end

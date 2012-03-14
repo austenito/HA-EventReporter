@@ -64,24 +64,4 @@ describe FindCommand, "#find <attribute> <criteria>" do
     result.length.should == 1
     result.include?(other_attendee).should == true
   end
-
-  it "accepts supported attributes" do
-    @command.is_valid?("regdate hi").should == true
-    @command.is_valid?("first_name hi").should == true
-    @command.is_valid?("last_name hi").should == true
-    @command.is_valid?("homephone 123123").should == true
-    @command.is_valid?("email_address 123123").should == true
-    @command.is_valid?("homephone test@test.com").should == true
-    @command.is_valid?("street 1220 Ohio").should == true
-    @command.is_valid?("street 1220 Ohio St.").should == true
-    @command.is_valid?("state HI").should == true
-    @command.is_valid?("city Honolulu").should == true
-    @command.is_valid?("zipcode 96819").should == true
-  end
-
-  it "does not accept unsupported attributes" do
-    @command.is_valid?("regdates hi").should == false
-    @command.is_valid?("find").should == false
-    @command.is_valid?("regdate").should == false
-  end
 end

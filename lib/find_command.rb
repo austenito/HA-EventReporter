@@ -12,13 +12,10 @@ class FindCommand
       #puts attendee.send(attribute).to_s + " = " + criteria 
 
       if attendee.send(attribute).to_s == criteria 
+        #yield to the block to save information?
         filtered_attendees << attendee
       end
     end
     filtered_attendees
-  end
-
-  def is_valid?(query)
-    (query =~ /(#{VALID_ATTR}) \w+/) == 0
   end
 end
