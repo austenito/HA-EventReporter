@@ -12,9 +12,10 @@ describe "find <attribute> <criteria>" do
     @attendee3 = mock(Attendee)
     @attendee3.stub(:first_name).and_return("Jeff")
     @attendees = [@attendee, @attendee2, @attendee3]
-
+    
     @queue = mock(Queue)
     @command = Commands.new(@queue)
+    @command.all_attendees = @attendees
   end
 
   it "finds attendees" do
@@ -23,7 +24,7 @@ describe "find <attribute> <criteria>" do
     @attendee.should_receive(:first_name)
     @attendee2.should_receive(:first_name)
     @attendee3.should_receive(:first_name)
-    @command.find(@attendees, "first_name Jeff")
+    @command.find("first_name Jeff")
   end
 
   it "finds zipcode" do
@@ -33,7 +34,8 @@ describe "find <attribute> <criteria>" do
     other_attendee = mock(Attendee)
     other_attendee.stub(:zipcode).and_return(zipcode)
     other_attendees = [other_attendee]
-    @command.find(other_attendees, "zipcode 96789")
+    @command.all_attendees = other_attendees
+    @command.find("zipcode 96789")
   end
 
   it "finds homephone" do
@@ -43,13 +45,14 @@ describe "find <attribute> <criteria>" do
     other_attendee = mock(Attendee)
     other_attendee.stub(:homephone).and_return(home_phone)
     other_attendees = [other_attendee]
-    @command.find(other_attendees, "homephone 8082301111")
+    @command.all_attendees = other_attendees
+    @command.find("homephone 8082301111")
   end
 
   it "finds no attendees" do
     @queue.should_receive(:clear) 
     @queue.should_receive(:add) 
-    @command.find(@attendees, "first_name Austen")
+    @command.find("first_name Austen")
   end
 
   it "finds address with spaces" do
@@ -60,9 +63,10 @@ describe "find <attribute> <criteria>" do
     other_attendee = mock(Attendee)
     other_attendee.stub(:street).and_return(address)
     other_attendees = [other_attendee]
-
     other_attendee.should_receive(:street)
-    @command.find(other_attendees, "street #{address}")
+    
+    @command.all_attendees = other_attendees
+    @command.find("street #{address}")
   end
 end
 
