@@ -7,23 +7,23 @@ describe "find <attribute> <criteria>" do
   before(:each) do
     @attendee = mock(Attendee)
     @attendee.stub(:first_name).and_return("Jeff")
-    @attendee2 = mock(Attendee)
-    @attendee2.stub(:first_name).and_return("Matt")
-    @attendee3 = mock(Attendee)
-    @attendee3.stub(:first_name).and_return("Jeff")
-    @attendees = [@attendee, @attendee2, @attendee3]
-    
     @queue = mock(Queue)
     @command = Commands.new(@queue)
-    @command.all_attendees = @attendees
   end
 
   it "finds attendees" do
+    attendee2 = mock(Attendee)
+    attendee2.stub(:first_name).and_return("Matt")
+    attendee3 = mock(Attendee)
+    attendee3.stub(:first_name).and_return("Jeff")
+
+    @attendee.should_receive(:first_name)
+    attendee2.should_receive(:first_name)
+    attendee3.should_receive(:first_name)
+    @command.all_attendees = [@attendee, attendee2, attendee3]
+
     @queue.should_receive(:clear) 
     @queue.should_receive(:add) 
-    @attendee.should_receive(:first_name)
-    @attendee2.should_receive(:first_name)
-    @attendee3.should_receive(:first_name)
     @command.find("first_name Jeff")
   end
 
@@ -67,6 +67,27 @@ describe "find <attribute> <criteria>" do
     
     @command.all_attendees = other_attendees
     @command.find("street #{address}")
+  end
+
+  it "is case-insensitive" do
+    args = mock(String)
+    args_return = mock(String)
+    args.should_receive(:downcase).and_return(args_return)
+    args_return.should_receive(:split).and_return(["first_name"])
+
+    @queue.should_receive(:clear) 
+    @queue.should_receive(:add) 
+
+    all_attendees = mock(Array)
+    @command.all_attendees = all_attendees
+    all_attendees.should_receive(:each).and_yield(@attendee)
+
+    first_name = mock(String)
+    @attendee.should_receive(:first_name).and_return(first_name)
+    first_name.should_receive(:to_s).and_return(first_name)
+    first_name.should_receive(:downcase)
+
+    @command.find(args)
   end
 end
 

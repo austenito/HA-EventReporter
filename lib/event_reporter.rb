@@ -28,6 +28,7 @@ class EventReporter
   end
 
   def execute(user_input)
+    user_input = user_input.downcase
     command = parse_command(user_input)
     args = parse_args(user_input)
 

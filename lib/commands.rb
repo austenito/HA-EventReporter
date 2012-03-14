@@ -29,19 +29,21 @@ class Commands
   end
 
   def find(args)
+    args = args.downcase
     args_array = args.split
     attribute = args_array.shift
     criteria = args_array.join(" ")
 
     filtered_attendees = []
     all_attendees.each do |attendee|  
-      if attendee.send(attribute).to_s == criteria 
+      if attendee.send(attribute).to_s.downcase == criteria 
         filtered_attendees << attendee
       end
     end
 
     attendee_queue.clear
     attendee_queue.add(filtered_attendees)
+    puts "Found #{filtered_attendees.length} records."
   end
 
   def queue(args)

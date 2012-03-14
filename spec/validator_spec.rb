@@ -1,6 +1,14 @@
 require 'validator'
 
 describe Validator, "#is_value?" do
+  it "is case-insensitive" do
+    command = mock(String)
+    args = mock(String)
+    command.should_receive(:downcase)
+    args.should_receive(:downcase)
+    Validator.is_valid?(command, args)
+  end
+
   it "rejects invalid commands" do
     Validator.is_valid?("touch", "regdate hi").should == false
     Validator.is_valid?("", "").should == false
