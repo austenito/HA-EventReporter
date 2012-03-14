@@ -2,6 +2,7 @@ require 'printer'
 require 'queue'
 require 'attendee'
 require 'csv'
+require 'validator'
 
 class Commands 
   DEFAULT_FILE = File.dirname(__FILE__) + "/event_attendees.csv"
@@ -28,8 +29,18 @@ class Commands
                    "quit" => "Exit"}
   end
 
+  def run(user_input)
+    user_input = user_input.downcase
+    command, args = parse(user_input)
+    
+    if Validator.is_valid?(command, args)
+      send(command, args) 
+    else 
+      print_help
+    end
+  end
+
   def find(args)
-    args = args.downcase
     args_array = args.split
     attribute = args_array.shift
     criteria = args_array.join(" ")
@@ -107,6 +118,15 @@ class Commands
         puts help_text
       end
     end
+  end
+
+  private
+
+  def parse(input)
+    inputs = []
+    params = input.split
+    inputs << params.shift
+    inputs << params.join(" ")
   end
 
   def print_help

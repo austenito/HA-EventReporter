@@ -3,6 +3,24 @@ require 'commands'
 require 'queue'
 require 'printer'
 
+describe "run" do
+  before(:each) do
+    @command = Commands.new
+  end
+
+  it "is case-insensitive" do
+    input = mock(String)
+    args = mock(String)
+    args_array = mock(Array)
+  
+    input.should_receive(:downcase).and_return(args)
+    args.should_receive(:split).and_return(args_array)
+    args_array.should_receive(:shift)
+    args_array.should_receive(:join).with(" ")
+    @command.run(input)
+  end
+end
+
 describe "find <attribute> <criteria>" do
   before(:each) do
     @attendee = mock(Attendee)
@@ -67,27 +85,6 @@ describe "find <attribute> <criteria>" do
     
     @command.all_attendees = other_attendees
     @command.find("street #{address}")
-  end
-
-  it "is case-insensitive" do
-    args = mock(String)
-    args_return = mock(String)
-    args.should_receive(:downcase).and_return(args_return)
-    args_return.should_receive(:split).and_return(["first_name"])
-
-    @queue.should_receive(:clear) 
-    @queue.should_receive(:add) 
-
-    all_attendees = mock(Array)
-    @command.all_attendees = all_attendees
-    all_attendees.should_receive(:each).and_yield(@attendee)
-
-    first_name = mock(String)
-    @attendee.should_receive(:first_name).and_return(first_name)
-    first_name.should_receive(:to_s).and_return(first_name)
-    first_name.should_receive(:downcase)
-
-    @command.find(args)
   end
 end
 

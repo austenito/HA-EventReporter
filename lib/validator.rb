@@ -3,9 +3,6 @@ class Validator
                 "street|city|state|zipcode"
 
   def self.is_valid?(command, args)
-    command = command.downcase unless command.nil?
-    args = args.downcase unless args.nil?
-      
     case command
     when "find"
       (args =~ /(#{ATTR}) \w+/) == 0
