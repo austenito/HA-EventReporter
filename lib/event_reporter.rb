@@ -2,7 +2,6 @@ $:.unshift File.dirname(__FILE__)
 require 'csv'
 require 'attendee'
 require 'queue'
-require 'queue_command'
 require 'commands'
 require 'validator'
 
@@ -13,7 +12,6 @@ class EventReporter
   def initialize
     @commands = Commands.new
     @queue = Queue.new
-    @queue_command = QueueCommand.new(@queue)
     @all_attendees = []
   end
 
@@ -46,14 +44,9 @@ class EventReporter
     if Validator.is_valid?(command, args)
       case command
       when "find"
-        attendees = commands.find(all_attendees, args)
-        puts attendees.length
-        queue.add(attendees)
+        commands.find(all_attendees, args)
       when "queue"
-        #if "print" 
-        #else "save"
-        #count
-        #clear
+        commands.queue(args)
       when "load"
         # do loader
       end
