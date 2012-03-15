@@ -14,13 +14,14 @@ class EventReporter
   def run
     is_loaded = false
     begin
-      printf "Enter file to load (Empty file loads event_attendees.csv): "
+      puts "\nWelcome to Event Reporter."
+      printf "Type file to load (Enter loads event_attendees.csv) > "
       user_command = gets.strip
       if commands.load(user_command) then break end
     end while user_command != "quit"
 
     while user_command != "quit" 
-      printf "Enter command: "
+      printf "Enter command > "
       user_command = gets.strip
       @commands.run(user_command)
     end
