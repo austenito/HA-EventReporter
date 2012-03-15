@@ -1,52 +1,93 @@
-$:.unshift File.dirname(__FILE__)
-require 'attendee'
-require 'date'
-require 'ruby-debug'
+require 'validator'
+require 'printer'
+require 'attendee_queue'
 
-# The object used to store attendees.  Note: If add is called, this
-# queue is cleared.
 class Queue
-  attr_reader :attendees
+  attr_reader :attendee_queue, :printer
 
-  def initialize(attendees = Array.new)
-    @attendees = attendees
+  def initialize(attendee_queue, printer= Printer.new)
+    @attendee_queue = attendee_queue
+    @printer = printer
+  end
+  
+  def queue(args)
+    if Validator.valid?("queue", args)
+      args = args.split
+      action = args[0]
+
+      case action
+      when "print"
+        if args.length == 3
+          attendee_queue.sort_by(args.last)
+        end
+        printer.print(attendee_queue.attendees)
+      when "save"
+        filename = args[2..-1].join(" ")
+        printer.save_to(attendee_queue.attendees, filename)
+      when "count" then puts "#{attendee_queue.count} records."
+      when "clear"
+        attendee_queue.clear
+        puts "Cleared queue."
+      end
+    else
+      #print_help
+    end
   end
 
-  def count
-   attendees.length
+  def subtract(args)
+    if Validator.valid?("subtract", args)
+
+      results = query_params(args) do |params|
+        find_matches(queue.attendees, params)
+      end
+      remove_count = results.inject(0) do |count, result|
+        @attendee_queue.remove(result)
+        count += 1
+      end
+      puts "Removed #{remove_count} records."
+    else
+      #print_help
+    end
   end
 
-  def clear
-    attendees.clear
+  def add(args)
+    if Validator.valid?("add", args)
+      results = query_params(args) do |params|
+        find_matches(queue.all_attendees, params)
+      end
+      add_count = results.inject(0) do |count, result|
+        @attendee_queue.append(result)
+        count += 1
+      end
+      puts "Added #{add_count} record."
+    else
+      #print_help
+    end
   end
 
-  def add(new_attendees)
-    attendees.clear
-    @attendees += new_attendees
+  def query_params(args)
+    args_array = args.split
+    args_array.shift
+    params = map_find(args_array.join(" "))
+    yield params
   end
 
-  def append(attendee)
-    @attendees << attendee
-  end
+  private
 
-  def remove(attendee)
-     attendees.delete(attendee)
-  end
-
-  def sort_by(attribute)
-    @attendees = attendees.sort_by do |attendee|
-      value = attendee.send(attribute)
-      case attribute
-      when "zipcode"
-        value.to_i
-      when "homephone"
-        value.to_i
-      when "regdate"
-        puts value
-       DateTime.strptime(value, "%m/%d/%Y %H:%M")
+  def map_find(args)
+    clauses = args.split("and")
+    params = {}
+    clauses.each do |clause|
+      clause = clause.strip
+      if Validator.valid?("find", clause)
+        args_array = clause.split
+        attribute = args_array.shift
+        criteria = args_array.join(" ")
+        params[attribute] = criteria
       else
-        value
+        return {}
       end
     end
+    params
   end
 end

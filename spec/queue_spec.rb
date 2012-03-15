@@ -1,75 +1,72 @@
+require 'attendee_queue'
 require 'queue'
+require 'printer'
+require 'validator'
 
-describe Queue do
+describe "queue <print>|<print by>|<save to>" do
   before(:each) do
+    @queue = mock(AttendeeQueue)
+    @printer = mock(Printer)
+    @command = Queue.new(@queue, @printer)
     @attendees = mock(Array)
-    @queue = Queue.new(@attendees)
+    @queue.stub(:attendees).and_return(@attendees)
   end
 
-  it "returns queue count" do
-    @attendees.should_receive(:length)
-    @queue.count
+  it "to queue methods" do
+    @queue.stub(:responds_to?).with("count")
+    @queue.should_receive(:count)
+    @command.queue("count")
   end
 
-  it "clears queue" do
-    @attendees.should_receive(:clear)
-    @queue.clear
+  it "should print by attribute" do
+    @queue.stub(:responds_to?).with("print").and_return(false)
+    @queue.should_receive(:sort_by).with("last_name")
+    @printer.should_receive(:print).with(@attendees)
+    @command.queue("print by last_name")
   end
 
-  it "clears before adding new attendees" do
-    @attendees.should_receive(:clear)
-    @attendees.should_receive(:+)
-    @queue.add(Array.new)
+  it "should save to file"  do
+    @printer.should_receive(:save_to).with(@attendees, "testfile")
+    @command.queue("save to testfile")
+  end
+end
+
+describe "subtract" do
+  before(:each) do
+    @queue = mock(AttendeeQueue)
+    @command = Queue.new(@queue)
+    @attendees = mock(Array)
   end
 
-  it "sorts by string name" do
+  it "from from queue" do
+    results = mock(Array)
     attendee = mock(Attendee)
-    attendee.should_receive("attribute")
-    @attendees.should_receive(:sort_by).and_yield(attendee)
-    @queue.sort_by("attribute")
+    Validator.stub(:valid?).and_return(true)
+
+    @command.stub(:query_params).and_return(results)
+    results.should_receive(:inject).and_yield(0, attendee).and_return(0)
+    @queue.should_receive(:remove).with(attendee)
+
+    @command.subtract(mock(String))
+  end
+end
+
+describe "add" do
+  before(:each) do
+    @queue = mock(AttendeeQueue)
+    @command = Queue.new(@queue)
+    @attendees = mock(Array)
   end
 
-  it "sorts by date" do
+  it "add to queue" do
+    results = mock(Array)
     attendee = mock(Attendee)
-    value = mock(String)
-    @attendees.should_receive(:sort_by).and_yield(attendee)
-    attendee.should_receive("regdate").and_return(value)
+    Validator.stub(:valid?).and_return(true)
 
-    DateTime.should_receive(:strptime).with(value, "%m/%d/%Y %H:%M")
-    @queue.sort_by("regdate")
-  end
+    @command.stub(:query_params).and_return(results)
+    results.should_receive(:inject).and_yield(0, attendee).and_return(0)
+    @queue.should_receive(:append).with(attendee)
 
-  it "sorts by phone number" do
-    attendee = mock(Attendee)
-    value = mock(String)
-
-    @attendees.should_receive(:sort_by).and_yield(attendee)
-    attendee.should_receive("homephone").and_return(value)
-    value.should_receive(:to_i)
-    @queue.sort_by("homephone")
-  end
-
-  it "sorts by zipcode" do
-    attendee = mock(Attendee)
-    value = mock(String)
-
-    @attendees.should_receive(:sort_by).and_yield(attendee)
-    attendee.should_receive("zipcode").and_return(value)
-    value.should_receive(:to_i)
-    @queue.sort_by("zipcode")
-  end
-
-  it "deletes attendees" do
-    attendee = mock(Attendee)
-    @attendees.should_receive(:delete).with(attendee)
-
-    @queue.remove(attendee)
-  end
-
-  it "appends attendees" do
-    attendee = mock(Attendee)
-    @attendees.should_receive(:clear).never
-    @attendees.should_receive(:<<).with(attendee)
-    @queue.append(attendee)
+    @command.add(mock(String))
   end
 end
