@@ -59,7 +59,7 @@ describe "find" do
     clause = mock(String)
     args.should_receive(:split).with("and").and_return([clause])
 
-    Validator.stub(:is_valid?).and_return(true)
+    Validator.stub(:valid?).and_return(true)
     clause.should_receive(:strip).and_return(clause)
     clause.should_receive(:split).and_return(["first_name", "austen"])
 
@@ -99,4 +99,33 @@ describe "queue <print>|<print by>|<save to>" do
     @printer.should_receive(:save_to).with(@attendees, "testfile")
     @command.queue("save to testfile")
   end
+
+describe "subtract" do
+  before(:each) do
+    @queue = mock(Queue)
+    @command = Commands.new(@queue)
+    @attendees = mock(Array)
+  end
+
+  it "should subtract from queue" do
+    args = mock(String)
+    args_array = mock(Array)
+    params = mock(Hash)
+    results = mock(Array)
+    results.stub(:length).and_return(0)
+    joined_array = mock(Array)
+
+    Validator.stub(:valid?).and_return(true)
+
+    args.should_receive(:split).and_return(args_array)
+    args_array.should_receive(:shift)
+    args_array.should_receive(:join).with(" ").and_return(String.new)
+    @queue.should_receive(:attendees).and_return([])
+    @command.stub(:map_find).and_return(Hash.new)
+    @command.should_receive(:find_matches).and_return(results)
+    @queue.should_receive(:remove).with(results)
+
+    @command.subtract(args)
+  end
+end
 end

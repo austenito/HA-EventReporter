@@ -33,7 +33,7 @@ class Commands
     user_input = user_input.downcase
     command, args = parse(user_input)
 
-    if Validator.is_valid?(command, args) ||  command == "find"
+    if Validator.command_valid?(command)
       send(command, args) 
     else 
       print_help
@@ -41,25 +41,15 @@ class Commands
   end
 
   def find(args)
-    clauses = args.split("and") 
-    params = {}
-    clauses.each do |clause|
-      clause = clause.strip
-      if Validator.is_valid?("find", clause)
-        args_array = clause.split
-        attribute = args_array.shift
-        criteria = args_array.join(" ")
-        params[attribute] = criteria
-      else
-        print_help
-        return
-      end
+    params = map_find(args)
+    if params.any?
+      filtered_attendees = find_matches(@all_attendees, params)
+      attendee_queue.clear
+      attendee_queue.add(filtered_attendees)
+      puts "Found #{filtered_attendees.length} records."
+    else
+      print_help  
     end
-
-    filtered_attendees = find_matches(@all_attendees, params)
-    attendee_queue.clear
-    attendee_queue.add(filtered_attendees)
-    puts "Found #{filtered_attendees.length} records."
   end
 
   def find_matches(attendees, params)
@@ -73,42 +63,52 @@ class Commands
     filtered_attendees
   end
 
-  def queue(args)
-    args = args.split
-    action = args[0]
+  def subtract(args)
+    if Validator.valid?("subtract", args)
+      args_array = args.split
+      args_array.shift 
+      params = map_find(args_array.join(" "))
+      subtracted_attendees = find_matches(@attendee_queue.attendees, params)
+      @attendee_queue.remove(subtracted_attendees)
+      puts "Removed #{subtracted_attendees.length} record."
+    else
+      print_help
+    end
+  end
 
-    case action
-    when "print"
-      if args.length == 3
-        attendee_queue.sort_by(args.last)
+  def queue(args)
+    if Validator.valid?("queue", args)
+      args = args.split
+      action = args[0]
+
+      case action
+      when "print"
+        if args.length == 3
+          attendee_queue.sort_by(args.last)
+        end
+        printer.print(attendee_queue.attendees)
+      when "save" then printer.save_to(attendee_queue.attendees, args.last)
+      when "count" then attendee_queue.count
+      when "clear" then attendee_queue.clear
       end
-      printer.print(attendee_queue.attendees)
-    when "save" then printer.save_to(attendee_queue.attendees, args.last)
-    when "count" then attendee_queue.count
-    when "clear" then attendee_queue.clear
+    else
+      print_help
     end
   end
 
   def load(filename)
     filename = DEFAULT_FILE if filename.length == 0
-    if File.exists?(filename)
-      store_attendees(filename) 
-      puts "File \"#{filename}\" loaded"
-      true
-    else
-      puts invalid_file(filename)
-      false
-    end
-  end
-
-  def store_attendees(filename)
-    all_attendees.clear 
-    file = CSV.open(filename, {:headers => true, :header_converters => :symbol})
-
-    attendees = []
-    file.each do |line|
-      record = line.to_hash
-      all_attendees << Attendee.new(record)
+    if Validator.valid?("load", filename)
+      if File.exists?(filename)
+        store_attendees(filename) 
+        puts "File \"#{filename}\" loaded"
+        true
+      else
+        puts invalid_file(filename)
+        false
+      end
+    else 
+      print_help
     end
   end
 
@@ -137,6 +137,34 @@ class Commands
   end
 
   private
+
+  def store_attendees(filename)
+    all_attendees.clear 
+    file = CSV.open(filename, {:headers => true, :header_converters => :symbol})
+
+    attendees = []
+    file.each do |line|
+      record = line.to_hash
+      all_attendees << Attendee.new(record)
+    end
+  end
+
+  def map_find(args)
+    clauses = args.split("and") 
+    params = {}
+    clauses.each do |clause|
+      clause = clause.strip
+      if Validator.valid?("find", clause)
+        args_array = clause.split
+        attribute = args_array.shift
+        criteria = args_array.join(" ")
+        params[attribute] = criteria
+      else
+        return {}
+      end
+    end
+    params
+  end
 
   def parse(input)
     inputs = []

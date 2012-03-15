@@ -22,6 +22,10 @@ class Queue
     @attendees += new_attendees
   end
 
+  def remove(attendees_to_remove)
+    attendees_to_remove.each { |attendee| @attendees.delete(attendee) }
+  end
+
   def sort_by(attribute)
     @attendees = attendees.sort_by do |attendee|
       value = attendee.send(attribute)

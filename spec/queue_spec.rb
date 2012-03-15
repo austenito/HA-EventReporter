@@ -58,4 +58,13 @@ describe Queue do
     value.should_receive(:to_i)
     @queue.sort_by("zipcode")
   end
+
+  it "deletes attendees" do
+    attendee = mock(Attendee)
+    attendee2 = mock(Attendee)
+    @attendees.should_receive(:delete).with(attendee)
+    @attendees.should_receive(:delete).with(attendee2)
+
+    @queue.remove([attendee, attendee2])
+  end
 end
