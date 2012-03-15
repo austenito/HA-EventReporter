@@ -30,9 +30,9 @@ class Commands
 
       if Validator.command_valid?(command)
         result = commands[command].send(command, args)
-        
-        if !result.nil? && result.success?
-          value = result.value
+
+        if result.success?
+          value = result.value unless result.nil?
           if command == "load" 
             puts "Loaded #{value}."
           elsif command == "find" 
@@ -47,10 +47,8 @@ class Commands
             if args.include?("save") then puts "Saved records to: #{value}" end
           end
         else
-          unless result.nil?
-            case result.value
-            when :invalid_file then puts "File is invalid."
-            end
+          case result.value
+          when :invalid_file then puts "File is invalid."
           else
             Help.print
           end

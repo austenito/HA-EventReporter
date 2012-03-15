@@ -1,3 +1,5 @@
+require 'result'
+
 class Help 
   FIND = "find <attribute> <criteria>\n" +
     "\tLoad the queue with all matching records.\n"+
@@ -24,7 +26,7 @@ class Help
 
   def help(args)
     if args.length == 0
-      print
+      Help.print
     else
       args = args.split
       command = args.shift
@@ -39,11 +41,12 @@ class Help
       end
 
       if help_text.nil?
-        print
+        Help.print
       else
         puts "\n#{help_text}"
       end
     end
+    Result.ok
   end
 
   def self.print

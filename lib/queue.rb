@@ -31,6 +31,8 @@ class Queue
         attendee_queue.clear
         Result.ok
       end
+    else 
+      Result.fail
     end
   end
 
