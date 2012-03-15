@@ -1,6 +1,7 @@
 require 'validator'
 require 'printer'
 require 'attendee_queue'
+require 'find'
 
 class Queue
   attr_reader :attendee_queue, :printer
@@ -65,29 +66,12 @@ class Queue
     end
   end
 
+  private
+
   def query_params(args)
     args_array = args.split
     args_array.shift
-    params = map_find(args_array.join(" "))
+    params = Find.map_find(args_array.join(" "))
     yield params
-  end
-
-  private
-
-  def map_find(args)
-    clauses = args.split("and")
-    params = {}
-    clauses.each do |clause|
-      clause = clause.strip
-      if Validator.valid?("find", clause)
-        args_array = clause.split
-        attribute = args_array.shift
-        criteria = args_array.join(" ")
-        params[attribute] = criteria
-      else
-        return {}
-      end
-    end
-    params
   end
 end

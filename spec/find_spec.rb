@@ -23,6 +23,7 @@ describe "find matches" do
 
     @command.find_matches([@attendee], @params)
   end
+
 end
 
 describe "find" do
@@ -32,23 +33,20 @@ describe "find" do
   end
 
   it "clears queue" do
-    @command.stub(:find_matches).and_return([])
-    @queue.should_receive(:add)
+    attendees = mock(Array)
+    @command.stub(:find_matches).and_return(attendees)
+    @queue.should_receive(:all_attendees).and_return([])
+    @queue.should_receive(:add).with(attendees)
     @command.find("first_name Austen")
   end
+end
 
-  it "handles compound query" do
-    args = mock(String)
-    clause = mock(String)
-    args.should_receive(:split).with("and").and_return([clause])
-
-    Validator.stub(:valid?).and_return(true)
-    clause.should_receive(:strip).and_return(clause)
-    clause.should_receive(:split).and_return(["first_name", "austen"])
-
-    values = Array.new
-    @command.stub!(:find_matches).and_return(values)
-    @queue.should_receive(:add).with(values)
-    @command.find(args)
+describe "Find.map_find" do
+  it "build params" do
+    Find.map_find("last_name austen").should == {"last_name" => "austen"}
+    Find.map_find("last_name austen and state hi").should == 
+      {"last_name" => "austen", "state" => "hi"}
+    Find.map_find("foo austen and state hi").should == {}
+    Find.map_find("foo austen").should == {}
   end
 end
