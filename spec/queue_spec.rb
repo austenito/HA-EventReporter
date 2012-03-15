@@ -28,7 +28,7 @@ describe Queue do
     @attendees.should_receive(:sort_by).and_yield(attendee)
     @queue.sort_by("attribute")
   end
-  
+
   it "sorts by date" do
     attendee = mock(Attendee)
     value = mock(String)

@@ -1,7 +1,7 @@
 require 'zip_code'
 
 describe ZipCode, "#clean_zipcode" do
-  it "prepends zeroes" do 
+  it "prepends zeroes" do
     ZipCode.new("96789").zipcode.should eq("96789")
     ZipCode.new("9").zipcode.should eq("00009")
     ZipCode.new("89").zipcode.should eq("00089")

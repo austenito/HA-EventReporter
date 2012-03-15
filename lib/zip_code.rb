@@ -10,7 +10,7 @@ class ZipCode
     elsif zipcode.length < 5
       diff = 5 - zipcode.length
       diff.times do |i|
-        zipcode = zipcode.insert(i, '0')  
+        zipcode = zipcode.insert(i, '0')
       end
     end
     self.zipcode = zipcode

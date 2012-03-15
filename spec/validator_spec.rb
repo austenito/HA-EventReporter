@@ -76,27 +76,27 @@ describe Validator, "#is_value?" do
   it "accepts supported save attributes" do
     Validator.valid?("queue", "save to file").should == true
     Validator.valid?("queue", "save to file.txt").should == true
-    Validator.valid?("queue", "save to file.txt hi").should == true 
+    Validator.valid?("queue", "save to file.txt hi").should == true
     Validator.valid?("queue", "save to /Users/austen/file.txt").should == true
   end
 
   it "does not accept save attributes" do
-    Validator.valid?("queue", "save file").should == false  
+    Validator.valid?("queue", "save file").should == false
   end
 
   it "does handle count" do
-    Validator.valid?("queue", "count").should == true 
+    Validator.valid?("queue", "count").should == true
     Validator.valid?("queue", "counts").should == false
   end
 
   it "does handle clear" do
-    Validator.valid?("queue", "clear").should == true 
-    Validator.valid?("queue", "clears").should == false 
+    Validator.valid?("queue", "clear").should == true
+    Validator.valid?("queue", "clears").should == false
   end
 
   it "loads any filename" do
-    Validator.valid?("load", "clears").should == true 
-    Validator.valid?("load", "C:\\Windows Sucks").should == true 
-    Validator.valid?("load", "/home/austen/omg").should == true 
+    Validator.valid?("load", "clears").should == true
+    Validator.valid?("load", "C:\\Windows Sucks").should == true
+    Validator.valid?("load", "/home/austen/omg").should == true
   end
 end

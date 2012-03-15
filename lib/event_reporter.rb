@@ -4,8 +4,8 @@ require 'queue'
 require 'commands'
 require 'validator'
 
-class EventReporter 
-  attr_reader :commands 
+class EventReporter
+  attr_reader :commands
 
   def initialize
     @commands = Commands.new
@@ -20,7 +20,7 @@ class EventReporter
       if commands.load(user_command) then break end
     end while user_command != "quit"
 
-    while user_command != "quit" 
+    while user_command != "quit"
       printf "Enter command > "
       user_command = gets.strip
       @commands.run(user_command) unless user_command == "quit"

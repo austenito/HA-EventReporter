@@ -12,7 +12,7 @@ describe "run" do
     input = mock(String)
     args = mock(String)
     args_array = mock(Array)
-  
+
     input.should_receive(:downcase).and_return(args)
     args.should_receive(:split).and_return(args_array)
     args_array.should_receive(:shift)
@@ -26,7 +26,7 @@ describe "find matches" do
     @attendee = mock(Attendee)
     @command = Commands.new(@queue)
     @attendees = mock(Array)
-    @params = mock(Hash) 
+    @params = mock(Hash)
   end
 
   it "finds attendees" do
@@ -49,7 +49,7 @@ describe "find" do
   end
 
   it "clears queue" do
-    @queue.should_receive(:add) 
+    @queue.should_receive(:add)
     @command.find("first_name Austen")
   end
 
@@ -111,7 +111,7 @@ describe "subtract" do
     results = mock(Array)
     attendee = mock(Attendee)
     Validator.stub(:valid?).and_return(true)
-    
+
     @command.stub(:query_params).and_return(results)
     results.should_receive(:inject).and_yield(0, attendee).and_return(0)
     @queue.should_receive(:remove).with(attendee)
@@ -131,7 +131,7 @@ describe "add" do
     results = mock(Array)
     attendee = mock(Attendee)
     Validator.stub(:valid?).and_return(true)
-    
+
     @command.stub(:query_params).and_return(results)
     results.should_receive(:inject).and_yield(0, attendee).and_return(0)
     @queue.should_receive(:append).with(attendee)

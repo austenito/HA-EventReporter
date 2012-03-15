@@ -4,18 +4,18 @@ require 'attendee'
 require 'csv'
 require 'validator'
 
-class Commands 
+class Commands
   DEFAULT_FILE = File.dirname(__FILE__) + "/event_attendees.csv"
   FIND = "find <attribute> <criteria>\n" +
     "\tLoad the queue with all matching records.\n"+
-    "\tAttributes: regdate, first_name, last_name, email_address, homephone, " +
-    "street, city, state, zipcode\n"
+    "\tAttributes: regdate, first_name, last_name, email_address, " +
+    "homephone, street, city, state, zipcode\n"
   PRINT = "queue print\n" +
     "\tPrint out a tab-delimited data table with a header row\n"
   PRINT_BY =  "queue print by <attribute>\n" +
     "\tPrint the data table sorted by the attribute\n"
   COUNT =  "queue count\n" +
-    "\tOutput how many records are in the current queue\n" 
+    "\tOutput how many records are in the current queue\n"
   CLEAR = "queue clear\n\tEmpties the queue\n"
   SAVE_TO =  "queue save to <filename>\n" +
     "\tExport the current queue to the specified filename as a CSV\n"
@@ -23,12 +23,12 @@ class Commands
     "\tErase any loaded data and parse the specified file. If no " +
     "filename is given, default to event_attendees.csv.\n"
   QUIT = "quit\n\tQuit Event Reporter :(\n"
-  HELP = { 
+  HELP = {
     "find" => FIND,
     "queue" => { "print" => PRINT, "print by" => PRINT_BY, "count" => COUNT,
     "clear" => CLEAR, "save to" => SAVE_TO }, "load" => LOAD ,"quit" => QUIT }
 
-  attr_reader :attendee_queue, :printer 
+  attr_reader :attendee_queue, :printer
   attr_accessor :all_attendees
   def initialize(attendee_queue = Queue.new, printer = Printer.new)
     @attendee_queue = attendee_queue
@@ -41,9 +41,9 @@ class Commands
     command, args = parse(user_input)
 
     if Validator.command_valid?(command)
-      send(command, args) 
-    else 
-      print_help 
+      send(command, args)
+    else
+      print_help
     end
   end
 
@@ -54,15 +54,15 @@ class Commands
       attendee_queue.add(filtered_attendees)
       puts "Found #{filtered_attendees.length} records."
     else
-      print_help  
+      print_help
     end
   end
 
   def find_matches(attendees, params)
     filtered_attendees = []
-    attendees.each do |attendee|  
-      match = params.all? do |attribute, criteria| 
-        attendee.send(attribute).to_s.downcase == criteria 
+    attendees.each do |attendee|
+      match = params.all? do |attribute, criteria|
+        attendee.send(attribute).to_s.downcase == criteria
       end
       filtered_attendees << attendee if match
     end
@@ -75,8 +75,8 @@ class Commands
       results = query_params(args) do |params|
         find_matches(@attendee_queue.attendees, params)
       end
-      remove_count = results.inject(0) do |count, result| 
-        @attendee_queue.remove(result) 
+      remove_count = results.inject(0) do |count, result|
+        @attendee_queue.remove(result)
         count += 1
       end
       puts "Removed #{remove_count} records."
@@ -90,8 +90,8 @@ class Commands
       results = query_params(args) do |params|
         find_matches(@all_attendees, params)
       end
-      add_count = results.inject(0) do |count, result| 
-        @attendee_queue.append(result) 
+      add_count = results.inject(0) do |count, result|
+        @attendee_queue.append(result)
         count += 1
       end
       puts "Added #{add_count} record."
@@ -102,7 +102,7 @@ class Commands
 
   def query_params(args)
     args_array = args.split
-    args_array.shift 
+    args_array.shift
     params = map_find(args_array.join(" "))
     yield params
   end
@@ -118,11 +118,11 @@ class Commands
           attendee_queue.sort_by(args.last)
         end
         printer.print(attendee_queue.attendees)
-      when "save" 
+      when "save"
         filename = args[2..-1].join(" ")
         printer.save_to(attendee_queue.attendees, filename)
       when "count" then puts "#{attendee_queue.count} records."
-      when "clear" 
+      when "clear"
         attendee_queue.clear
         puts "Cleared queue."
       end
@@ -135,14 +135,14 @@ class Commands
     filename = DEFAULT_FILE if filename.length == 0
     if Validator.valid?("load", filename)
       if File.exists?(filename)
-        store_attendees(filename) 
+        store_attendees(filename)
         puts "Loaded \"#{filename}\"\n\n"
         true
       else
         puts invalid_file(filename)
         false
       end
-    else 
+    else
       print_help
     end
   end
@@ -160,11 +160,11 @@ class Commands
       when "queue"
         help_text = help_value[args.join(" ")]
       else
-        help_text = HELP[command] 
+        help_text = HELP[command]
       end
 
       if help_text.nil?
-        print_help 
+        print_help
       else
         puts "\n#{help_text}"
       end
@@ -174,8 +174,9 @@ class Commands
   private
 
   def store_attendees(filename)
-    all_attendees.clear 
-    file = CSV.open(filename, {:headers => true, :header_converters => :symbol})
+    all_attendees.clear
+    file = CSV.open(filename, {:headers => true,
+                    :header_converters => :symbol})
 
     attendees = []
     file.each do |line|
@@ -185,7 +186,7 @@ class Commands
   end
 
   def map_find(args)
-    clauses = args.split("and") 
+    clauses = args.split("and")
     params = {}
     clauses.each do |clause|
       clause = clause.strip
@@ -209,7 +210,7 @@ class Commands
   end
 
   def print_help
-    puts "\n====HELP MENU====\n" 
+    puts "\n====HELP MENU====\n"
     puts HELP["load"]
     puts HELP["find"]
     puts HELP["queue"]["print"]

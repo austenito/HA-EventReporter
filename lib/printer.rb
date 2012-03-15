@@ -8,8 +8,8 @@ class Printer
     puts sprintf(header_format, "LAST NAME", "FIRST NAME", "EMAIL", "ZIPCODE",
                 "CITY", "STATE", "ADDRESS")
     attendees.each do |attendee|
-      puts sprintf(header_format, attendee.last_name, attendee.first_name, 
-                   attendee.email_address, attendee.zipcode.zipcode, 
+      puts sprintf(header_format, attendee.last_name, attendee.first_name,
+                   attendee.email_address, attendee.zipcode.zipcode,
                    attendee.city, attendee.state, attendee.street)
     end
   end
@@ -19,15 +19,15 @@ class Printer
     output = CSV.open(filename, "w")
     is_top = true
     attendees.each do |attendee|
-      attendee_hash = attendee.marshal_dump 
-      output << attendee_hash.keys if is_top 
-      is_top = false 
+      attendee_hash = attendee.marshal_dump
+      output << attendee_hash.keys if is_top
+      is_top = false
       output << attendee_hash.values
     end
     output.close
     puts "File written to: #{filename}"
     rescue
-      puts "There was a problem writing to: #{filename}" 
+      puts "There was a problem writing to: #{filename}"
     end
   end
 end

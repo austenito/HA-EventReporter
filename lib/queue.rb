@@ -2,11 +2,11 @@ $:.unshift File.dirname(__FILE__)
 require 'attendee'
 require 'date'
 require 'ruby-debug'
-class Queue 
-  attr_reader :attendees 
+class Queue
+  attr_reader :attendees
 
   def initialize(attendees = Array.new)
-    @attendees = attendees 
+    @attendees = attendees
   end
 
   def count
