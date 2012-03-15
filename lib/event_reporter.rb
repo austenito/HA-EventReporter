@@ -23,8 +23,10 @@ class EventReporter
     while user_command != "quit" 
       printf "Enter command > "
       user_command = gets.strip
-      @commands.run(user_command)
+      @commands.run(user_command) unless user_command == "quit"
     end
+
+    puts "Goodbye."
   end
 end
 

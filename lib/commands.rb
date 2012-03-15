@@ -43,7 +43,7 @@ class Commands
     if Validator.command_valid?(command)
       send(command, args) 
     else 
-      print_help
+      print_help 
     end
   end
 
