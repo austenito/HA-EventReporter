@@ -2,6 +2,9 @@ $:.unshift File.dirname(__FILE__)
 require 'attendee'
 require 'date'
 require 'ruby-debug'
+
+# The object used to store attendees.  Note: If add is called, this
+# queue is cleared.
 class Queue
   attr_reader :attendees
 

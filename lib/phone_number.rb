@@ -1,7 +1,10 @@
+# The abstraction of a phone number. Numbers entered into this object are
+# cleaned
 class PhoneNumber
   INVALID_PHONE_NUM  = "0000000000"
   attr_accessor :phone_number
 
+  # Cleans and stores the specified phone number
   def initialize(phone_number)
     phone_number = phone_number.delete('.()  -')
     if phone_number.length == 11 && phone_number[0] == "1"

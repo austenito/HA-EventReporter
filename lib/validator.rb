@@ -1,3 +1,4 @@
+# The helper class used to check if user commands and queries are valid.
 class Validator
   ATTR = "regdate|first_name|last_name|email_address|homephone|" +
                 "street|city|state|zipcode"

@@ -1,3 +1,5 @@
+# The object used to store zipcode information. When this class is initialized,
+# the zip code is cleaned and stored.
 class ZipCode
   attr_accessor :zipcode
   INVALID_ZIPCODE = "00000"

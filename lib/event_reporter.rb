@@ -4,6 +4,7 @@ require 'queue'
 require 'commands'
 require 'validator'
 
+# The entry point for the EventReport CLI program
 class EventReporter
   attr_reader :commands
 

@@ -2,6 +2,7 @@ $:.unshift File.dirname(__FILE__)
 require 'csv'
 require 'attendee'
 
+# Helper class used to print output and save output to file
 class Printer
   def print(attendees)
     header_format = "%-20s\t%-20s\t%-40s\t%-8s\t%-30s\t%-2s\t%-40s"

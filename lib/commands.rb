@@ -4,6 +4,7 @@ require 'attendee'
 require 'csv'
 require 'validator'
 
+# The object containing methods used to invoke commands on event reporter.
 class Commands
   DEFAULT_FILE = File.dirname(__FILE__) + "/event_attendees.csv"
   FIND = "find <attribute> <criteria>\n" +
@@ -30,6 +31,7 @@ class Commands
 
   attr_reader :attendee_queue, :printer
   attr_accessor :all_attendees
+
   def initialize(attendee_queue = Queue.new, printer = Printer.new)
     @attendee_queue = attendee_queue
     @printer = printer
