@@ -1,6 +1,7 @@
 require 'attendee_queue'
 require 'result'
 
+# The command used to load csv files into the system
 class Loader
   DEFAULT_FILE = File.dirname(__FILE__) + "/event_attendees.csv"
   attr_reader :attendee_queue

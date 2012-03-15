@@ -1,3 +1,4 @@
+# The object returned from executed commands
 class Result
   attr_reader :value, :success
 

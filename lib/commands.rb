@@ -7,7 +7,7 @@ require 'loader'
 # The object containing methods used to invoke commands on event reporter.
 class Commands
 
-  attr_reader :attendee_queue, :commands 
+  attr_reader :attendee_queue, :commands
 
   def initialize(attendee_queue = AttendeeQueue.new, printer = Printer.new)
     @attendee_queue = attendee_queue
@@ -33,15 +33,15 @@ class Commands
 
         if result.success?
           value = result.value unless result.nil?
-          if command == "load" 
+          if command == "load"
             puts "Loaded #{value}."
-          elsif command == "find" 
+          elsif command == "find"
             puts "Found #{value} records."
           elsif command == "subtract"
             puts "Removed #{value} records."
           elsif command == "add"
             puts "Added #{value} records."
-          elsif command == "queue" 
+          elsif command == "queue"
             if args.include?("count") then puts "#{value} records." end
             if args.include?("clear") then puts "Cleared queue." end
             if args.include?("save") then puts "Saved records to: #{value}" end

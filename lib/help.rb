@@ -1,6 +1,7 @@
 require 'result'
 
-class Help 
+# The help command used to print useful information to users
+class Help
   FIND = "find <attribute> <criteria>\n" +
     "\tLoad the queue with all matching records.\n"+
     "\tAttributes: regdate, first_name, last_name, email_address, " +

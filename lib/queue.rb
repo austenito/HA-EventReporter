@@ -4,6 +4,7 @@ require 'attendee_queue'
 require 'find'
 require 'result'
 
+# Used to execute Queue methods such as printing and queue math.
 class Queue
   attr_reader :attendee_queue, :printer
 
@@ -11,7 +12,7 @@ class Queue
     @attendee_queue = attendee_queue
     @printer = printer
   end
-  
+
   def queue(args)
     if Validator.valid?("queue", args)
       args = args.split
@@ -27,11 +28,11 @@ class Queue
         filename = args[2..-1].join(" ")
         printer.save_to(attendee_queue.filtered_attendees, filename)
       when "count" then Result.ok(attendee_queue.count)
-      when "clear" 
+      when "clear"
         attendee_queue.clear
         Result.ok
       end
-    else 
+    else
       Result.fail
     end
   end

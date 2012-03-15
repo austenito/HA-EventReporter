@@ -29,7 +29,7 @@ end
 describe "Find.map_find" do
   it "build params" do
     Find.map_find("last_name austen").should == {"last_name" => "austen"}
-    Find.map_find("last_name austen and state hi").should == 
+    Find.map_find("last_name austen and state hi").should ==
       {"last_name" => "austen", "state" => "hi"}
     Find.map_find("foo austen and state hi").should == {}
     Find.map_find("foo austen").should == {}

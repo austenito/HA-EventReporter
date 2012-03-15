@@ -1,6 +1,7 @@
 require 'attendee'
 require 'attendee_queue'
 
+# The command used to find attendee records
 class Find
   attr_reader :queue
   def initialize(queue = AttendeeQueue.new)
