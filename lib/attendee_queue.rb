@@ -6,7 +6,8 @@ require 'ruby-debug'
 # The object used to store filtered_attendees.  Note: If add is called, this
 # queue is cleared.
 class AttendeeQueue
-  attr_reader :all_attendees, :filtered_attendees
+  attr_reader :filtered_attendees
+  attr_accessor :all_attendees
 
   def initialize(all_attendees = Array.new, filtered_attendees = Array.new)
     @all_attendees = all_attendees

@@ -21,11 +21,13 @@ describe "queue <print>|<print by>|<save to>" do
   it "should print by attribute" do
     @queue.stub(:responds_to?).with("print").and_return(false)
     @queue.should_receive(:sort_by).with("last_name")
+    @queue.should_receive(:filtered_attendees).and_return(@attendees)
     @printer.should_receive(:print).with(@attendees)
     @command.queue("print by last_name")
   end
 
   it "should save to file"  do
+    @queue.should_receive(:filtered_attendees).and_return(@attendees)
     @printer.should_receive(:save_to).with(@attendees, "testfile")
     @command.queue("save to testfile")
   end

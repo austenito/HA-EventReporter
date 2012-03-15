@@ -2,6 +2,7 @@ require 'validator'
 require 'printer'
 require 'attendee_queue'
 require 'find'
+require 'result'
 
 class Queue
   attr_reader :attendee_queue, :printer
@@ -21,17 +22,15 @@ class Queue
         if args.length == 3
           attendee_queue.sort_by(args.last)
         end
-        printer.print(attendee_queue.attendees)
+        printer.print(attendee_queue.filtered_attendees)
       when "save"
         filename = args[2..-1].join(" ")
-        printer.save_to(attendee_queue.attendees, filename)
-      when "count" then puts "#{attendee_queue.count} records."
-      when "clear"
+        printer.save_to(attendee_queue.filtered_attendees, filename)
+      when "count" then Result.ok(attendee_queue.count)
+      when "clear" 
         attendee_queue.clear
-        puts "Cleared queue."
+        Result.ok
       end
-    else
-      #print_help
     end
   end
 
@@ -39,30 +38,26 @@ class Queue
     if Validator.valid?("subtract", args)
 
       results = query_params(args) do |params|
-        find_matches(queue.attendees, params)
+        Find.find_matches(attendee_queue.filtered_attendees, params)
       end
       remove_count = results.inject(0) do |count, result|
-        @attendee_queue.remove(result)
+        attendee_queue.remove(result)
         count += 1
       end
-      puts "Removed #{remove_count} records."
-    else
-      #print_help
+      Result.ok(remove_count)
     end
   end
 
   def add(args)
     if Validator.valid?("add", args)
       results = query_params(args) do |params|
-        find_matches(queue.all_attendees, params)
+        Find.find_matches(attendee_queue.all_attendees, params)
       end
       add_count = results.inject(0) do |count, result|
-        @attendee_queue.append(result)
+        attendee_queue.append(result)
         count += 1
       end
-      puts "Added #{add_count} record."
-    else
-      #print_help
+      Result.ok(add_count)
     end
   end
 

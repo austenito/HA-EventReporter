@@ -24,7 +24,7 @@ class Help
 
   def help(args)
     if args.length == 0
-      print_help
+      print
     else
       args = args.split
       command = args.shift
@@ -39,14 +39,14 @@ class Help
       end
 
       if help_text.nil?
-        print_help
+        print
       else
         puts "\n#{help_text}"
       end
     end
   end
 
-  def print_help
+  def self.print
     puts "\n====HELP MENU====\n"
     puts HELP["load"]
     puts HELP["find"]

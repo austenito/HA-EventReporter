@@ -2,61 +2,61 @@ require 'printer'
 require 'csv'
 require 'validator'
 require 'help'
+require 'loader'
 
 # The object containing methods used to invoke commands on event reporter.
 class Commands
-  COMMANDS = {"help" => Help.new}
-  DEFAULT_FILE = File.dirname(__FILE__) + "/event_attendees.csv"
 
-  attr_reader :attendee_queue, :printer
-  attr_accessor :all_attendees
+  attr_reader :attendee_queue, :commands 
 
   def initialize(attendee_queue = AttendeeQueue.new, printer = Printer.new)
     @attendee_queue = attendee_queue
-    @printer = printer
-    @all_attendees = []
+    queue = Queue.new(attendee_queue)
+    @commands = {
+      "load" => Loader.new(@attendee_queue),
+      "help" => Help.new,
+      "queue" => queue,
+      "subtract" => queue,
+      "add" => queue,
+      "find" => Find.new(@attendee_queue) }
   end
 
   def run(user_input)
-    user_input = user_input.downcase
-    command, args = parse(user_input)
-
-    if Validator.command_valid?(command)
-      COMMANDS[command].send(command, args)
-  #send(command, args)
-      #puts COMMANDS[command]
+    if user_input == nil || user_input.empty?
+      Help.print
     else
-      ##print_help
-    end
-  end
+      user_input = user_input.downcase
+      command, args = parse(user_input)
 
-  def load(filename)
-    filename = DEFAULT_FILE if filename.length == 0
-    if Validator.valid?("load", filename)
-      if File.exists?(filename)
-        store_attendees(filename)
-        puts "Loaded \"#{filename}\"\n\n"
-        true
+      if Validator.command_valid?(command)
+        result = commands[command].send(command, args)
+        
+        if !result.nil? && result.success?
+          value = result.value
+          if command == "load" 
+            puts "Loaded #{value}."
+          elsif command == "find" 
+            puts "Found #{value} records."
+          elsif command == "subtract"
+            puts "Removed #{value} records."
+          elsif command == "add"
+            puts "Added #{value} records."
+          elsif command == "queue" 
+            if args.include?("count") then puts "#{value} records." end
+            if args.include?("clear") then puts "Cleared queue." end
+            if args.include?("save") then puts "Saved records to: #{value}" end
+          end
+        else
+          unless result.nil?
+            case result.value
+            when :invalid_file then puts "File is invalid."
+            end
+          else
+            Help.print
+          end
+        end
       else
-        puts invalid_file(filename)
-        false
       end
-    else
-      #print_help
-    end
-  end
-
-  private
-
-  def store_attendees(filename)
-    all_attendees.clear
-    file = CSV.open(filename, {:headers => true,
-                    :header_converters => :symbol})
-
-    attendees = []
-    file.each do |line|
-      record = line.to_hash
-      all_attendees << Attendee.new(record)
     end
   end
 

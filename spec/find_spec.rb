@@ -21,24 +21,9 @@ describe "find matches" do
     first_name.should_receive(:to_s).and_return(next_first_name)
     next_first_name.should_receive(:downcase).and_return("jeff")
 
-    @command.find_matches([@attendee], @params)
+    Find.find_matches([@attendee], @params)
   end
 
-end
-
-describe "find" do
-  before(:each) do
-    @queue = mock(AttendeeQueue)
-    @command = Find.new(@queue)
-  end
-
-  it "clears queue" do
-    attendees = mock(Array)
-    @command.stub(:find_matches).and_return(attendees)
-    @queue.should_receive(:all_attendees).and_return([])
-    @queue.should_receive(:add).with(attendees)
-    @command.find("first_name Austen")
-  end
 end
 
 describe "Find.map_find" do

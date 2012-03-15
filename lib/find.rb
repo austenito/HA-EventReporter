@@ -10,15 +10,14 @@ class Find
   def find(args)
     params = Find.map_find(args)
     if params.any?
-      filtered_attendees = find_matches(queue.all_attendees, params)
+      filtered_attendees = Find.find_matches(queue.all_attendees, params)
       queue.add(filtered_attendees)
-      #puts "Found #{filtered_attendees.length} records."
-    else
-      #print_help
+      Result.ok(filtered_attendees.length)
+    else Result.ok(0)
     end
   end
 
-  def find_matches(attendees, params)
+  def self.find_matches(attendees, params)
     filtered_attendees = []
     attendees.each do |attendee|
       match = params.all? do |attribute, criteria|
