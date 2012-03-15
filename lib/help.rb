@@ -18,11 +18,16 @@ class Help
   LOAD = "load <filename>\n" +
     "\tErase any loaded data and parse the specified file. If no " +
     "filename is given, default to event_attendees.csv.\n"
+  SUBTRACT = "subtract find <attribute> <criteria>\n" +
+    "\tRemoves the records found with the specified query\n"
+  ADD = "add find <attribute> <criteria>\n" +
+    "\tAdds the records found with the specified query\n"
   QUIT = "quit\n\tQuit Event Reporter :(\n"
   HELP = {
     "find" => FIND,
     "queue" => { "print" => PRINT, "print by" => PRINT_BY, "count" => COUNT,
-    "clear" => CLEAR, "save to" => SAVE_TO }, "load" => LOAD ,"quit" => QUIT }
+    "clear" => CLEAR, "save to" => SAVE_TO }, "load" => LOAD ,"quit" => QUIT ,
+    "subtract" => SUBTRACT, "add" => ADD }
 
 
   def help(args)
@@ -51,6 +56,8 @@ class Help
     puts "\n====HELP MENU====\n"
     puts HELP["load"]
     puts HELP["find"]
+    puts HELP["add"]
+    puts HELP["subtract"]
     puts HELP["queue"]["print"]
     puts HELP["queue"]["print by"]
     puts HELP["queue"]["count"]
