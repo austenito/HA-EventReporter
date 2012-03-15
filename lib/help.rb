@@ -35,16 +35,13 @@ class Help
 
       help_text = nil
       case command
-      when "queue"
-        help_text = help_value[args.join(" ")]
-      else
-        help_text = HELP[command]
+      when "queue" then help_text = help_value[args.join(" ")]
+      else help_text = HELP[command]
       end
 
       if help_text.nil?
         Help.print
-      else
-        puts "\n#{help_text}"
+      else puts "\n#{help_text}"
       end
     end
     Result.ok

@@ -19,18 +19,10 @@ class Queue
       action = args[0]
 
       case action
-      when "print"
-        if args.length == 3
-          attendee_queue.sort_by(args.last)
-        end
-        printer.print(attendee_queue.filtered_attendees)
-      when "save"
-        filename = args[2..-1].join(" ")
-        printer.save_to(attendee_queue.filtered_attendees, filename)
+      when "print" then print(args)
+      when "save" then save(args)
       when "count" then Result.ok(attendee_queue.count)
-      when "clear"
-        attendee_queue.clear
-        Result.ok
+      when "clear" then clear(args)
       end
     else
       Result.fail
@@ -39,7 +31,6 @@ class Queue
 
   def subtract(args)
     if Validator.valid?("subtract", args)
-
       results = query_params(args) do |params|
         Find.find_matches(attendee_queue.filtered_attendees, params)
       end
@@ -65,6 +56,21 @@ class Queue
   end
 
   private
+
+  def print(args)
+    if args.length == 3 then attendee_queue.sort_by(args.last) end
+    printer.print(attendee_queue.filtered_attendees)
+  end
+
+  def save(args)
+    filename = args[2..-1].join(" ")
+    printer.save_to(attendee_queue.filtered_attendees, filename)
+  end
+
+  def clear(args)
+    attendee_queue.clear
+    Result.ok
+  end
 
   def query_params(args)
     args_array = args.split

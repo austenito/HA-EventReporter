@@ -39,8 +39,7 @@ class Find
         attribute = args_array.shift
         criteria = args_array.join(" ")
         params[attribute] = criteria
-      else
-        return {}
+      else return {}
       end
     end
     params
