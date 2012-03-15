@@ -44,7 +44,6 @@ class Commands
     params = map_find(args)
     if params.any?
       filtered_attendees = find_matches(@all_attendees, params)
-      attendee_queue.clear
       attendee_queue.add(filtered_attendees)
       puts "Found #{filtered_attendees.length} records."
     else
@@ -65,15 +64,40 @@ class Commands
 
   def subtract(args)
     if Validator.valid?("subtract", args)
-      args_array = args.split
-      args_array.shift 
-      params = map_find(args_array.join(" "))
-      subtracted_attendees = find_matches(@attendee_queue.attendees, params)
-      @attendee_queue.remove(subtracted_attendees)
-      puts "Removed #{subtracted_attendees.length} record."
+
+      results = query_params(args) do |params|
+        find_matches(@attendee_queue.attendees, params)
+      end
+      remove_count = results.inject(0) do |count, result| 
+        @attendee_queue.remove(result) 
+        count += 1
+      end
+      puts "Removed #{remove_count} records."
     else
       print_help
     end
+  end
+
+  def add(args)
+    if Validator.valid?("add", args)
+      results = query_params(args) do |params|
+        find_matches(@all_attendees, params)
+      end
+      add_count = results.inject(0) do |count, result| 
+        @attendee_queue.append(result) 
+        count += 1
+      end
+      puts "Added #{add_count} record."
+    else
+      print_help
+    end
+  end
+
+  def query_params(args)
+    args_array = args.split
+    args_array.shift 
+    params = map_find(args_array.join(" "))
+    yield params
   end
 
   def queue(args)

@@ -1,7 +1,7 @@
 $:.unshift File.dirname(__FILE__)
 require 'attendee'
 require 'date'
-
+require 'ruby-debug'
 class Queue 
   attr_reader :attendees 
 
@@ -22,8 +22,12 @@ class Queue
     @attendees += new_attendees
   end
 
-  def remove(attendees_to_remove)
-    attendees_to_remove.each { |attendee| @attendees.delete(attendee) }
+  def append(attendee)
+    @attendees << attendee
+  end
+
+  def remove(attendee)
+     attendees.delete(attendee)
   end
 
   def sort_by(attribute)

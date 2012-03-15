@@ -12,6 +12,8 @@ class Validator
       (args =~ /.+/) == 0
     when "subtract"
       (args =~ /find (#{ATTR}) \w+/) == 0
+    when "add"
+      (args =~ /find (#{ATTR}) \w+/) == 0
     when "help" then true
     else false
     end
@@ -23,6 +25,7 @@ class Validator
     when "queue" then true
     when "load" then true
     when "subtract" then true
+    when "add" then true
     when "help" then true
     end
   end

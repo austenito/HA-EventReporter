@@ -61,10 +61,15 @@ describe Queue do
 
   it "deletes attendees" do
     attendee = mock(Attendee)
-    attendee2 = mock(Attendee)
     @attendees.should_receive(:delete).with(attendee)
-    @attendees.should_receive(:delete).with(attendee2)
 
-    @queue.remove([attendee, attendee2])
+    @queue.remove(attendee)
+  end
+
+  it "appends attendees" do
+    attendee = mock(Attendee)
+    @attendees.should_receive(:clear).never
+    @attendees.should_receive(:<<).with(attendee)
+    @queue.append(attendee)
   end
 end

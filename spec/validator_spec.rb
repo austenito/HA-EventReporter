@@ -35,6 +35,20 @@ describe Validator, "#is_value?" do
     Validator.valid?("subtract","find zipcode 96819").should == true
   end
 
+  it "accepts supported subtract attributes" do
+    Validator.valid?("add","find regdate hi").should == true
+    Validator.valid?("add","find first_name hi").should == true
+    Validator.valid?("add","find last_name hi").should == true
+    Validator.valid?("add","find homephone 123123").should == true
+    Validator.valid?("add","find email_address 123123").should == true
+    Validator.valid?("add","find homephone test@test.com").should == true
+    Validator.valid?("add","find street 1220 Ohio").should == true
+    Validator.valid?("add","find street 1220 Ohio St.").should == true
+    Validator.valid?("add","find state HI").should == true
+    Validator.valid?("add","find city Honolulu").should == true
+    Validator.valid?("add","find zipcode 96819").should == true
+  end
+
   it "does not accept unsupported find attributes" do
     Validator.valid?("find", "regdates hi").should == false
     Validator.valid?("find", "find").should == false
