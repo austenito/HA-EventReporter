@@ -7,7 +7,7 @@ class Validator
     when "find"
       (args =~ /(#{ATTR}) \w+/) == 0
     when "queue"
-      (args =~ /count$|clear$|print( by (#{ATTR}))?$|save to \w+(.\w+)?$/) == 0
+      (args =~ /count$|clear$|print( by (#{ATTR}))?$|save to .+/) == 0
     when "load"
       (args =~ /.+/) == 0
     when "subtract"

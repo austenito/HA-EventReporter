@@ -15,6 +15,7 @@ class Printer
   end
 
   def save_to(attendees, filename)
+    begin
     output = CSV.open(filename, "w")
     is_top = true
     attendees.each do |attendee|
@@ -24,5 +25,9 @@ class Printer
       output << attendee_hash.values
     end
     output.close
+    puts "File written to: #{filename}"
+    rescue
+      puts "There was a problem writing to: #{filename}" 
+    end
   end
 end

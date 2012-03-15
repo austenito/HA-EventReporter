@@ -118,7 +118,9 @@ class Commands
           attendee_queue.sort_by(args.last)
         end
         printer.print(attendee_queue.attendees)
-      when "save" then printer.save_to(attendee_queue.attendees, args.last)
+      when "save" 
+        filename = args[2..-1].join(" ")
+        printer.save_to(attendee_queue.attendees, filename)
       when "count" then puts "#{attendee_queue.count} records."
       when "clear" 
         attendee_queue.clear
